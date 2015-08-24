@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+  	<!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link href="css/style.css" rel="stylesheet">
     <!-- Load D3 from site -->
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <!-- Load JQuery from site -->
@@ -9,22 +14,7 @@
 
   </head>
  
-    <!-- CSS (Styling) -->
-    <style type="text/css">
-            /* Format X and Y Axis */
-            .axis path,
-            .axis line {
-                fill: none;
-                stroke: black;
-                shape-rendering: crispEdges;
-            }
-
-            .axis text {
-                font-family: sans-serif;
-                font-size: 11px;
-            }
-    </style>
-    <!-- End CSS (Styling) -->
+   
  
   <body>
     <h2>D3 Scatterplot </h2>
@@ -32,67 +22,16 @@
     
     <!-- Input for Riot API Key -->
     <RiotAPIKeyInput>Click to set Riot API key<br></RiotAPIKeyInput>
-    <script type="text/javascript">
-  
-	    // API Key stuff
-		API_KEY="";
-		function prompt_for_apiKey(){
-		    var temp=prompt("Please enter your Riot API key",API_KEY);
-		    if (temp)
-		    {
-		    	API_KEY = temp;
-		    	d3.select("RiotAPIKeyInput").text('Riot API key: \"' + API_KEY + "\". Click here to change.");
-		    }
-		}
-		d3.select("RiotAPIKeyInput")
-	        .on("click", function() { prompt_for_apiKey(); } );
-    </script>
 
     <coolData>Click here to load data!</coolData>
-    <script type="text/javascript">
-		d3.select("coolData")
-		    .on("click", function() {
-		    	var temp=prompt("Please enter the URL of the Data:", "data/pca_dump.json");
-		    	loadDataFromFile(	temp,
-						    		function(json_data){
-								        var numValues = json_data.length;
-								        var data = []; // Initialize empty array
-								        for (var i = 0; i < numValues; i++) {
-								            data.push(
-								                [json_data[i].coordinate.x,
-								                    json_data[i].coordinate.y
-								                ]
-								            ); // Add new numbers to array
-								        }
-								        updateDataset(data);
-								        updateScatterPlot();
-						    		}
-		    	);
-		               
-		    });
-    </script>
+    
     <h4>Click on this text to update chart with new values</h4>
-    <script type="text/javascript">
-    // On click, update with new data
-	d3.select("h4")
-	    .on("click", function() {
-
-	    	// Set random values
-	        var numValues = dataset.length; // Get original dataset's length
-	        var maxRange = Math.random() * 1000; // Get max range of new values
-	        var data = []; // Initialize empty array
-	        for (var i = 0; i < numValues; i++) {
-	            var newNumber1 = Math.floor(Math.random() * maxRange); // Random int for x
-	            var newNumber2 = Math.floor(Math.random() * maxRange); // Random int for y
-	            data.push([newNumber1, newNumber2]); // Add new numbers to array
-	        }
-
-	        updateDataset(data);
-	        updateScatterPlot();
-	    });
-    </script>
+    
     <d3ScatterPlot></d3ScatterPlot>
-  
+  </body>
+    
+
+
     <!-- Begin D3 Javascript -->
     <script src="js/d3_scatterplot.js"></script>
  	<!-- Load static data sets -->
@@ -129,6 +68,64 @@
 			pca_dump = json;
 		});
 	</script>
-	
-  </body>
+
+	<script type="text/javascript">
+  
+	    // API Key stuff
+		API_KEY="";
+		function prompt_for_apiKey(){
+		    var temp=prompt("Please enter your Riot API key",API_KEY);
+		    if (temp)
+		    {
+		    	API_KEY = temp;
+		    	d3.select("RiotAPIKeyInput").text('Riot API key: \"' + API_KEY + "\". Click here to change.");
+		    }
+		}
+		d3.select("RiotAPIKeyInput")
+	        .on("click", function() { prompt_for_apiKey(); } );
+    </script>
+
+    <script type="text/javascript">
+		d3.select("coolData")
+		    .on("click", function() {
+		    	var temp=prompt("Please enter the URL of the Data:", "data/pca_dump.json");
+		    	loadDataFromFile(	temp,
+						    		function(json_data){
+								        var numValues = json_data.length;
+								        var data = []; // Initialize empty array
+								        for (var i = 0; i < numValues; i++) {
+								            data.push(
+								                [json_data[i].coordinate.x,
+								                    json_data[i].coordinate.y
+								                ]
+								            ); // Add new numbers to array
+								        }
+								        updateDataset(data);
+								        updateScatterPlot();
+						    		}
+		    	);
+		               
+		    });
+    </script>
+
+    <script type="text/javascript">
+    // On click, update with new data
+	d3.select("h4")
+	    .on("click", function() {
+
+	    	// Set random values
+	        var numValues = dataset.length; // Get original dataset's length
+	        var maxRange = Math.random() * 1000; // Get max range of new values
+	        var data = []; // Initialize empty array
+	        for (var i = 0; i < numValues; i++) {
+	            var newNumber1 = Math.floor(Math.random() * maxRange); // Random int for x
+	            var newNumber2 = Math.floor(Math.random() * maxRange); // Random int for y
+	            data.push([newNumber1, newNumber2]); // Add new numbers to array
+	        }
+
+	        updateDataset(data);
+	        updateScatterPlot();
+	    });
+    </script>
+
 </html>
