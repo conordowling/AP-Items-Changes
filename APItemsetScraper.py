@@ -38,17 +38,18 @@ def wait_for_request():
 
 for patch in ["5.11", "5.14"]:
     for region in ["BR","EUNE","EUW","KR","LAN","LAS","NA","OCE","RU","TR"]:
+        print "REGION: ", region
         data = open(patch + "/RANKED_SOLO/" + region + ".json")
         matches = json.load(data)
         collection  = MongoDBSafe(CHALLENGE_DB, patch + "_" + region, url=URL)
         region_var = region.lower()
-	if collection.connection[collection.db][collection.collection].count() == 10000:
+	if collection.connection[collection.db][collection.collection].count() == len(matches):
 		matches = []
         for match in matches:
 	    print(match)
             if not collection.get({"_id":match}):
                 wait_for_request()
-		print("querying match")
+                print("querying match")
                 try:
                     match_data = watcher.get_match(match, region=region_var, include_timeline=True)
                     # add in _id field

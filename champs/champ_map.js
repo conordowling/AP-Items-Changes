@@ -1,11 +1,16 @@
 function champ_map() {
 
 	var game = this;
-	var info = Object();
+	patch = game.matchVersion.substring(0,game.matchVersion.indexOf(".",2));
 
 	for(i in game.participants) {
 		player = game.participants[i];
-		emit(player.championId, 1);
+		key = Object();
+		key.patch = patch;
+		key.region = game.region;
+		key.tier = player.highestAchievedSeasonTier;
+		key.champ = player.championId;
+		emit(key, 1);
 	}
 
 }

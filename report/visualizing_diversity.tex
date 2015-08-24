@@ -1,0 +1,58 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Visualizing Item Diversity through Dimensionality Reduction}
+\author{Conor Dowling and Alex Brigham}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+
+\section{Introduction}
+
+\section{Data Pipeline}
+\subsection{RiotWatcher}
+The first step in the data pipeline is collecting the match data for the matches provided for the challenge. We used a Python module called RiotWatcher (github.com/pseudonym117/Riot-Watcher) to interface with the Riot API and systematically request the data for each game.
+
+\subsection{MongoDB}
+We chose to store this match data in a MongoDB database, creating a table for each set of matches provided. MongoDB seemed like an obvious choice because it was easy to setup and could store the match data in raw JSON format with no editing required.
+
+\subsection{MapReduce}
+Once we had gathered all of the data, we used MongoDB's built-in map-reduce functionality to extract the data that we wanted from each game and aggregate that data within regions and patches.
+
+\subsection{Sci-Kit Learn}
+
+\section{Visualization}
+\subsection{Javascript}
+\subsection{D3}
+\subsection{CSS}
+
+\section{Dimensionality Reduction}
+\subsection{Data}
+\subsection{Principle Component Analysis}
+\subsection{Gaussian Random Projection}
+\subsection{Across Champions}
+\subsection{Within Champions}
+
+
+\section{Results}
+\section{Build Diversity Across Champions}
+\section{Item Diversity and Build Order Diversity Within Champions}
+\section{Notable Trends}
+
+\section{Conclusions}
+
+
+\subsection{}
+
+
+
+\end{document}  

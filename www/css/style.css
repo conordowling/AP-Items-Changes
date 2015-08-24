@@ -10,3 +10,17 @@
     font-family: sans-serif;
     font-size: 11px;
 }
+
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+/* Graph Style */
+.graph-div {
+	padding:10px;
+	text-align:center;
+}
