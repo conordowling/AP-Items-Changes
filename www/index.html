@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- Load JQuery from site -->
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script> 
+
+
+  </head>
+ 
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+            /* Format X and Y Axis */
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+    </style>
+    <!-- End CSS (Styling) -->
+ 
+  <body>
+    <h2>D3 Scatterplot </h2>
+    <p>This is a data visualization using transitions with a scatterplot</p>
+    
+    <!-- Input for Riot API Key -->
+    <RiotAPIKeyInput>Click to set Riot API key<br></RiotAPIKeyInput>
+    <script type="text/javascript">
+  
+	    // API Key stuff
+		API_KEY="";
+		function prompt_for_apiKey(){
+		    var temp=prompt("Please enter your Riot API key",API_KEY);
+		    if (temp)
+		    {
+		    	API_KEY = temp;
+		    	d3.select("RiotAPIKeyInput").text('Riot API key: \"' + API_KEY + "\". Click here to change.");
+		    }
+		}
+		d3.select("RiotAPIKeyInput")
+	        .on("click", function() { prompt_for_apiKey(); } );
+    </script>
+
+    <coolData>Click here to load data!</coolData>
+    <script type="text/javascript">
+		d3.select("coolData")
+		    .on("click", function() {
+		    	var temp=prompt("Please enter the URL of the Data:", "data/pca_dump.json");
+		    	loadDataFromFile(	temp,
+						    		function(json_data){
+								        var numValues = json_data.length;
+								        var data = []; // Initialize empty array
+								        for (var i = 0; i < numValues; i++) {
+								            data.push(
+								                [json_data[i].coordinate.x,
+								                    json_data[i].coordinate.y
+								                ]
+								            ); // Add new numbers to array
+								        }
+								        updateDataset(data);
+								        updateScatterPlot();
+						    		}
+		    	);
+		               
+		    });
+    </script>
+    <h4>Click on this text to update chart with new values</h4>
+    <script type="text/javascript">
+    // On click, update with new data
+	d3.select("h4")
+	    .on("click", function() {
+
+	    	// Set random values
+	        var numValues = dataset.length; // Get original dataset's length
+	        var maxRange = Math.random() * 1000; // Get max range of new values
+	        var data = []; // Initialize empty array
+	        for (var i = 0; i < numValues; i++) {
+	            var newNumber1 = Math.floor(Math.random() * maxRange); // Random int for x
+	            var newNumber2 = Math.floor(Math.random() * maxRange); // Random int for y
+	            data.push([newNumber1, newNumber2]); // Add new numbers to array
+	        }
+
+	        updateDataset(data);
+	        updateScatterPlot();
+	    });
+    </script>
+    <d3ScatterPlot></d3ScatterPlot>
+  
+    <!-- Begin D3 Javascript -->
+    <script src="js/d3_scatterplot.js"></script>
+ 	<!-- Load static data sets -->
+    <script type="text/javascript">
+
+		// Loading static datasets
+		$.getJSON("data/item_index.json", function(json) {
+			item_index = json.data;
+		});
+		$.getJSON("data/champion_index.json", function(json) {
+			champion_index = json.data;
+			//Create list of champion IDs
+			champion_id_index = [];
+			for (var key in champion_index) {
+			    if (key === 'length' || !champion_index.hasOwnProperty(key)) continue;
+			    champion_id_index.push(key);
+			    //console.log("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"]);
+			    svg.append("pattern")
+			        .attr("id", champion_index[key]["image"]["full"])
+			        .attr("patternUnits", "objectBoundingBox")
+			        .attr("width", "25")
+			        .attr("height", "25")
+			        .append("image")
+			        .attr("xlink:href", "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"] + "")
+			        .attr("x", 0)
+			        .attr("y", 0)
+			        .attr("width", 25)
+			        .attr("height", 25);
+			}
+		});
+
+		// Our data
+		$.getJSON("data/pca_dump.json", function(json) {
+			pca_dump = json;
+		});
+	</script>
+	
+  </body>
+</html>
