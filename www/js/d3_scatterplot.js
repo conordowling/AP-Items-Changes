@@ -1,5 +1,6 @@
 // Global data
 var dataset = []; // The data that is going to be rendered
+var distance = [];
 
 // Setup settings for graphic
 var canvas_width = 500;
@@ -14,6 +15,9 @@ var xAxis, yAxis;
 
 // SVG Object
 var svg;
+
+// HTML element to put the visualization in
+var d3SP_element="d3ScatterPlot";
 
 
 // Create a scatter plot
@@ -30,7 +34,8 @@ initializeRandomScatterPlot(10, 100);
 //  None
 function initializeDataPointsFromDataset() {
     // Create Circles
-    svg.selectAll("circle")
+    console.log(this.dataset);
+    this.svg.selectAll("circle")
         .data(dataset)
         .enter()
         .append("circle")
@@ -61,7 +66,7 @@ function initializeD3Visualization() {
         .ticks(5);
 
     // Create SVG element
-    this.svg = d3.select("d3ScatterPlot") // This is where we put our vis
+    this.svg = d3.select(d3SP_element) // This is where we put our vis
         .append("svg")
         .attr("width", canvas_width)
         .attr("height", canvas_height)
@@ -114,50 +119,88 @@ function initializeScatterPlot(data) {
 };
 
 function initializeRandomScatterPlot(numDataPoints, maxRange) {
-    var data = [];
-    for (var i = 0; i < numDataPoints; i++) {
-        var newNumber1 = Math.floor(Math.random() * maxRange); // New random integer
-        var newNumber2 = Math.floor(Math.random() * maxRange); // New random integer
-        data.push([newNumber1, newNumber2]); // Add new number to array
-    }
+    // Get the random points
+    var randomPoints = getRandomPoints(numDataPoints, maxRange);
     // Next step
-    initializeScatterPlot(data);
+    initializeScatterPlot(randomPoints);
 };
  
 // **************************************
 // * Update functions                   *
 // **************************************
 
+//
+// Plot
+//
+
 function updateDataset(newDataset){
+    if (newDataset == null || newDataset == undefined){
+        console.log("Attempted to set dataset to null or undefined. No changes were made.");
+        return;
+    }
+    //console.log("Dataset:" + dataset.length + "\tNewdataset:" + newDataset.length + "\tCompare:" +( newDataset.length > dataset.length ? newDataset.length : dataset.length ))
+    for (var i = 0 ; i < ( newDataset.length > this.dataset.length ? newDataset.length : this.dataset.length ) ; i++ ){
+        this.distance[i] = Math.sqrt( Math.pow(getX(this.dataset[i]) - getX(newDataset[i]),2) + Math.pow(getY(this.dataset[i]) - getY(newDataset[i]),2) );
+    }
     this.dataset = newDataset;
 }
 
-function updateScaleAndAxis() {
+function updateScaleAndAxisWithValues(domain, range) {
 
-    xScale.domain([
-        d3.min(dataset, getX),
-        d3.max(dataset, getX)
-    ]);
+    this.xScale.domain(range);
 
-    yScale.domain([
-        d3.min(dataset, getY),
-        d3.max(dataset, getY)
-    ]);
+    this.yScale.domain(domain);
 
-    svg.select(".x.axis")
+    this.svg.select(".x.axis")
         .transition()
         .duration(1000)
         .call(xAxis);
 
-    svg.select(".y.axis")
+    this.svg.select(".y.axis")
         .transition()
         .duration(100)
         .call(yAxis);
 }
 
+function updateScaleAndAxis() {
+
+    updateScaleAndAxisWithValues(
+    [
+        d3.min(dataset, getY),
+        d3.max(dataset, getY)
+    ],
+    [
+        d3.min(dataset, getX),
+        d3.max(dataset, getX)
+    ]
+
+    )
+    /*
+    this.xScale.domain([
+        d3.min(dataset, getX),
+        d3.max(dataset, getX)
+    ]);
+
+    this.yScale.domain([
+        d3.min(dataset, getY),
+        d3.max(dataset, getY)
+    ]);
+
+    this.svg.select(".x.axis")
+        .transition()
+        .duration(1000)
+        .call(xAxis);
+
+    this.svg.select(".y.axis")
+        .transition()
+        .duration(100)
+        .call(yAxis);
+    */
+}
+
 function updateCircles() {
 
-    svg.selectAll("circle")
+    this.svg.selectAll("circle")
         .data(dataset)
         .enter()
         .append("circle")
@@ -167,9 +210,15 @@ function updateCircles() {
         .attr("cy", function(d) {
             return yScale(getY(d));
         })
-        .attr("r", 2);
+        .attr("r", function(d){
+            return 2;
+        })
+        .style("visibility", function(d) {
+            //console.log(d);
+            return d == undefined ? "hidden" : "visible";
+        });
 
-    svg.selectAll("circle")
+    this.svg.selectAll("circle")
         .data(dataset) // Update with new data
         .transition() // Transition from old to new
         .duration(1000) // Length of animation
@@ -194,6 +243,10 @@ function updateCircles() {
                 .duration(500)
                 .attr("fill", "black") // Change color
             .attr("r", "2"); // Change radius   
+        })
+        .style("visibility", function(d) {
+            //console.log(d);
+            return d == undefined ? "hidden" : "visible";
         });
 }
 
@@ -202,23 +255,60 @@ function updateScatterPlot(){
     updateCircles();
 }
 
+//
+// Data elements
+//
+
+function setGameData(patch, region){
+    loadDataFromFile(
+        "data/by_patch_region/grp_" + patch + region,
+        function(json){
+            updateDataset(json);
+        }
+    );
+}
+
+
 // **************************************
 // * Misc functions                     *
 // **************************************
 
+function getRandomPoints(volume, maxValue){
+    var data = [];
+    for (var i = 0; i < volume; i++) {
+        var newObject = {};
+        newObject.coordinate = {};
+        newObject.coordinate.x = Math.floor(Math.random() * maxValue);
+        newObject.coordinate.y = Math.floor(Math.random() * maxValue);
+        data.push(newObject); // Add new number to array
+    }
+    return data;
+}
+
 function loadDataFromFile(filename, cb){
     //TODO: Add some safety
-    $.getJSON(filename, cb);
+    $.getJSON(filename, 
+        function(json){
+            var data = [];
+            for (var i in json){
+                data[json[i].champion] = json[i];
+            }
+            cb(data);
+        }
+        );
 }
 
 function getX(data) {
-    return data[0];
+    if (!data) return 0;
+    return data.coordinate.x;
 }
 
 function getY(data) {
-    return data[1];
+    if (!data) return 0;
+    return data.coordinate.y;
 }
 function getValue(data){
+    if (!data) return 0;
     return data.champion;
 }
 function compare(a, b){
