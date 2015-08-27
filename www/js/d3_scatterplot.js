@@ -256,14 +256,47 @@ function updateScatterPlot(){
 }
 
 //
+// GUI elements
+//
+
+function updateDeltaTable() {
+    var table = document.getElementById("delta-table")
+    table.innerHTML = '';
+
+    newEntries = [];
+    for(i in distance) {
+        if(distance[i] > 0) {
+            d = distance[i];
+            console.log(i);
+            c = champion_index[i].name
+            i = champion_index[i].image;
+            table.innerHTML += "<div class='panel panel-default delta-panel'><div class='panel-body'>" + i + c + "</div></div>";
+        }
+    }
+}
+
+//
 // Data elements
 //
 
-function setGameData(patch, region){
+function setGameDataRegion(patch, region){
     loadDataFromFile(
-        "data/by_patch_region/grp_" + patch + region,
+        "data/by_patch_region/grp_" + patch + "_" + region,
         function(json){
             updateDataset(json);
+            updateScatterPlot();
+            updateDeltaTable();
+        }
+    );
+}
+
+function setGameDataTier(patch, tier) {
+    loadDataFromFile(
+        "data/by_patch_tier/grp_" + patch + "_" + tier,
+        function(json){
+            updateDataset(json);
+            updateScatterPlot();
+            updateDeltaTable();
         }
     );
 }

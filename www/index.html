@@ -12,7 +12,15 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Switch -->
     <line href="css/bootstrap-switch.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/assets/css/docs.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/highlight.css" rel="stylesheet">
+
+    <!-- Bootstrap Theme -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha256-sHwgyDk4CGNYom267UJX364ewnY4Bh55d53pxP5WDug= sha512-mkkeSf+MM3dyMWg3k9hcAttl7IVHe2BA1o/5xKLl4kBaP0bih7Mzz/DBy4y6cNZCHtE2tPgYBYH/KtEjOQYKxA==" crossorigin="anonymous">
 
     <!-- Custom Styles -->
     <link href="css/style.css" rel="stylesheet">
@@ -51,33 +59,53 @@
         <p class="lead">We used dimensionality reduction to plot average champion builds in two dimensions.<br>The closer two champions are, the more similar their builds.</p>
       </div>
 
-      
-
       <div class="row">
+      	 <coolData>Click here to load data!</coolData>
+          
+          <h4>Click on this text to update chart with new values</h4>
+      </div>
 
-        <div class="col-md-3">
-          <div class="btn-group-vertical" role="group" aria-label="...">
-            <div class="btn-group" role="group" aria-label="...">Bronze</div>
-            <div class="btn-group" role="group" aria-label="...">Silver</div>
-            <div class="btn-group" role="group" aria-label="...">Gold</div>
-            <div class="btn-group" role="group" aria-label="...">Platinum</div>
-            <div class="btn-group" role="group" aria-label="...">Diamond+</div>
-            <div class="btn-group" role="group" aria-label="...">All</div>
+      <div class="row gui-container">
+
+        <div class="col-md-1 left-div">
+          <div id="region_selector" class="btn-group-vertical" role="group" aria-label="regions">
+            <button type="button" class="btn btn-default active" id="ALL_REGIONS">All</button>
+            <button type="button" class="btn btn-default" value="BR">BR</button>
+            <button type="button" class="btn btn-default" value="EUNE">EUNE</button>
+ 			      <button type="button" class="btn btn-default" value="EUW">EUW</button>
+       			<button type="button" class="btn btn-default" value="KR">KR</button>
+       			<button type="button" class="btn btn-default" value="LAN">LAN</button>
+       			<button type="button" class="btn btn-default" value="LAS">LAS</button>
+       			<button type="button" class="btn btn-default" value="NA">NA</button>
+       			<button type="button" class="btn btn-default" value="OCE">OCE</button>
+       			<button type="button" class="btn btn-default" value="RU">RU</button>
+       			<button type="button" class="btn btn-default" value="TR">TR</button>
           </div>
         </div>
 
-        <div class="graph-div col-mid-6">
-          <coolData>Click here to load data!</coolData>
-          
-          <h4>Click on this text to update chart with new values</h4>
+        <div class="center-div col-mid-6">
         
-          <d3ScatterPlot></d3ScatterPlot>
+          <div class="graph-div">
+            <d3ScatterPlot></d3ScatterPlot>
+          </div>
 
+          <div id="tier_selector" class="btn-group" role="group" aria-label="tiers">
+            <button type="button" class="btn btn-default" value="BRONZE">Bronze</button>
+  		      <button type="button" class="btn btn-default" value="SILVER">Silver</button>
+       			<button type="button" class="btn btn-default" value="GOLD">Gold</button>
+       			<button type="button" class="btn btn-default" value="PLATINUM">Platinum</button>
+       			<button type="button" class="btn btn-default" value="DIAMOND">Diamond+</button>
+       			<button type="button" class="btn btn-default" value="ALL_TIERS">All</button>
+          </div>
+
+          <div>
           <input type="checkbox" name="patch-switch" checked data-on-text="5.11" data-off-text="5.14" >
+          </div>
 
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3 right-div">
+          <!--
           <div class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Dropdown
@@ -89,6 +117,45 @@
               <li><a href="#">Something else here</a></li>
               <li><a href="#">Separated link</a></li>
             </ul>
+          </div>
+        -->
+
+          <div class="delta-container" id="delta-table">
+            <div class="panel panel-default delta-panel">
+  		        <div class="panel-body">
+  			       Basic panel example
+              </div>
+  		      </div>
+            <div class="panel panel-default delta-panel">
+              <div class="panel-body">
+               Basic panel example
+              </div>
+            </div>
+            <div class="panel panel-default delta-panel">
+              <div class="panel-body">
+               Basic panel example
+              </div>
+            </div>
+            <div class="panel panel-default delta-panel">
+              <div class="panel-body">
+               Basic panel example
+              </div>
+            </div>
+            <div class="panel panel-default delta-panel">
+              <div class="panel-body">
+               Basic panel example
+              </div>
+            </div>
+            <div class="panel panel-default delta-panel">
+              <div class="panel-body">
+               Basic panel example
+              </div>
+            </div>
+            <div class="panel panel-default delta-panel">
+              <div class="panel-body">
+               Basic panel example
+              </div>
+            </div>
           </div>
 
         </div>
@@ -104,7 +171,7 @@
     <!-- Load JQuery from site -->
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script> 
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-switch.min.js"></script>
+    <script src="js/bootstrap-switch.js"></script>
     <script src="js/highlight.js"></script>
 
 
@@ -113,8 +180,6 @@
     <script src="js/d3_scatterplot.js"></script>
   <!-- Load static data sets -->
     <script type="text/javascript">
-
-    $("[name='patch-switch']").bootstrapSwitch();
 
     // Loading static datasets
     $.getJSON("data/item_index.json", function(json) {
@@ -193,6 +258,35 @@
           updateScatterPlot();
       });
     </script>
+
+    <script>
+    var selected_region = "ALL_REGIONS";
+    $('#region_selector button').click(function() {
+      $(this).addClass('active').siblings().removeClass('active');
+      selected_region = $(this).val();
+      setGameDataRegion(selected_patch, selected_region);
+    });
+
+    var selected_tier = "ALL_TIERS";
+    $('#tier_selector button').click(function() {
+      $(this).addClass('active').siblings().removeClass('active');
+      selected_tier = $(this).val();
+      //setGameDataTier(selected_patch, selected_tier);
+    });
+
+    var selected_patch = "5.11";
+    $("[name='patch-switch']").bootstrapSwitch();
+    $("input[name='patch-switch']").on('switchChange.bootstrapSwitch', function(event, state) {
+      if(state) {
+        selected_patch = "5.11";
+      } else {
+        selected_patch = "5.14";
+      }
+      setGameDataRegion(selected_patch, selected_region);
+    });
+
+    </script>
+
 
   </body>
 </html>

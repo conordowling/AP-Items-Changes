@@ -19,8 +19,35 @@ body {
   text-align: center;
 }
 
+.center-div {
+  text-align:center;
+}
+
+.left-div {
+  text-align:right;
+}
+
+.right-div {
+  text-align:left;
+}
+
 /* Graph Style */
 .graph-div {
 	padding:10px;
+  width:100%;
 	text-align:center;
+}
+
+.delta-container {
+  padding:0px;
+  overflow:scroll;
+  height:300px;
+  width:200px;
+}
+
+.delta-panel {
+  padding:5px;
+  margin:0px;
+  height:50px;
+  border-radius:0px;
 }
