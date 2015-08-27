@@ -271,7 +271,7 @@
     $('#tier_selector button').click(function() {
       $(this).addClass('active').siblings().removeClass('active');
       selected_tier = $(this).val();
-      //setGameDataTier(selected_patch, selected_tier);
+      setGameDataTier(selected_patch, selected_tier);
     });
 
     var selected_patch = "5.11";
