@@ -3,8 +3,8 @@ var dataset = []; // The data that is going to be rendered
 var distance = [];
 
 // Setup settings for graphic
-var canvas_width = 500;
-var canvas_height = 300;
+var canvas_width = 1000;
+var canvas_height = 500;
 var padding = 30; // for chart edges
 
 // Scale functions
@@ -237,15 +237,49 @@ function updateCircles() {
         .attr("cy", function(d) {
             return yScale(getY(d)); // Circle's Y
         })
+        .each(function(){
+            // Fill with image
+            d3  .select(this)
+                .style("fill", function(d){
+                    if (d == null) return null;
+                    return "url(#" + d["champion"] + ")";
+                });
+        })
+        .each(function(){
+            d3  .select(this)
+            .on('mouseover',function() {
+                d3  .select(this)
+                    .transition()
+                    .duration(200)
+                    .attr("r", function(d){ 
+                                if (d == null)
+                                    return 2;
+                                return (Math.log(d.games) + 5) * 3;
+                    }); // Change radius 
+            })
+            .on('mouseout',function () {
+                d3  .select(this)
+                    .transition()
+                    .duration(200)
+                    .attr("r", function(d){ 
+                                if (d == null)
+                                    return 2;
+                                return Math.log(d.games) + 5;
+                    }); // Change radius 
+            })
+        })
         .each("end", function() { // End animation
             d3.select(this) // 'this' means the current element
-            .transition()
+                .transition()
                 .duration(500)
                 .attr("fill", "black") // Change color
-            .attr("r", "2"); // Change radius   
+                .attr("r", function(d){ 
+                                if (d == null)
+                                    return 2;
+                                return Math.log(d.games) + 5;
+                            } ); // Change radius   
         })
         .style("visibility", function(d) {
-            //console.log(d);
             return d == undefined ? "hidden" : "visible";
         });
 }
@@ -268,7 +302,7 @@ function updateDeltaTable() {
         if(distance[i] > 0) {
             d = distance[i];
             console.log(i);
-            c = champion_index[i].name
+            c = champion_index[i].name;
             i = champion_index[i].image;
             table.innerHTML += "<div class='panel panel-default delta-panel'><div class='panel-body'>" + i + c + "</div></div>";
         }
@@ -335,7 +369,6 @@ function getX(data) {
     if (!data) return 0;
     return data.coordinate.x;
 }
-
 function getY(data) {
     if (!data) return 0;
     return data.coordinate.y;

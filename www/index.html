@@ -193,17 +193,19 @@
           if (key === 'length' || !champion_index.hasOwnProperty(key)) continue;
           champion_id_index.push(key);
           //console.log("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"]);
+          // And fetch all the images for the champions
+          var box_size = "25";
           svg.append("pattern")
-              .attr("id", champion_index[key]["image"]["full"])
-              .attr("patternUnits", "objectBoundingBox")
-              .attr("width", "25")
-              .attr("height", "25")
+              .attr("id", key)
+              .attr("patternUnits", "objectBoundingBox") //userSpaceOnUse or objectBoundingBox or maybe viewBox
+              .attr("width", box_size)
+              .attr("height", box_size)
               .append("image")
               .attr("xlink:href", "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"] + "")
-              .attr("x", 0)
-              .attr("y", 0)
-              .attr("width", 25)
-              .attr("height", 25);
+              .attr("x", "0")
+              .attr("y", "0")
+              .attr("width", box_size)
+              .attr("height", box_size);
       }
     });
 
