@@ -315,7 +315,7 @@ function updateDeltaTable() {
 
 function setGameDataRegion(patch, region){
     loadDataFromFile(
-        "data/by_patch_region/grp_" + patch + "_" + region,
+        "data/by_patch_region/grp_" + patch + "_" + region + ".json",
         function(json){
             updateDataset(json);
             updateScatterPlot();
@@ -326,7 +326,7 @@ function setGameDataRegion(patch, region){
 
 function setGameDataTier(patch, tier) {
     loadDataFromFile(
-        "data/by_patch_tier/grp_" + patch + "_" + tier,
+        "data/by_patch_tier/grp_" + patch + "_" + tier + ".json",
         function(json){
             updateDataset(json);
             updateScatterPlot();

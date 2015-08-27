@@ -1,3 +1,3 @@
 function build_reduce(key, values) {
-	return values[0];
+	return Array.sum(values);
 }
