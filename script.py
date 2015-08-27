@@ -23,12 +23,15 @@ with open('ap_items.json', 'r') as ap:
 	for key in placeholder.keys():
 		AP_ITEMS[int(key)] = placeholder[key]
 
-# key = ( patch, region, tier, champ )
+# key = ( patch, region, champ )
+# key = ( patch, tier, champ )
 # values = [ feature vector ]
 
 
-final_data = defaultdict(lambda: [0]*len(AP_ITEMS))
-games = defaultdict(lambda: 0)
+region_data = defaultdict(lambda: [0]*len(AP_ITEMS))
+tier_data = defaultdict(lambda: [0]*len(AP_ITEMS))
+region_games = defaultdict(lambda: 0)
+tier_games = defaultdict(lambda: 0)
 
 for patch in ["5.11", "5.14"]:
     for region in ["BR","EUNE","EUW","KR","LAN","LAS","NA","OCE","RU","TR"]:
@@ -41,25 +44,48 @@ for patch in ["5.11", "5.14"]:
 			k = e['_id']
 			if k['item'] in AP_ITEMS.keys():
 				index = AP_ITEMS.keys().index(int(k['item']))
-				final_data[( k['patch'], k['region'], k['champ'] )] [index] += e['value']
-				#final_data[( k['patch'], k['region'], k['tier'], k['champ'] )] [index] += e['value']
+				region_data[( k['patch'], k['region'], k['champ'] )] [index] += e['value']
+				#region_data[( k['patch'], k['region'], k['tier'], k['champ'] )] [index] += e['value']
+				tier = k['tier']
+				if tier in ["MASTER", "CHALLENGER"]:
+					tier = "DIAMOND"
+
+				tier_data[( k['patch'], tier, k['champ'] )] [index] += e['value']
 
 		for c in champ_results.find():
 			k = c['_id']
 			key = ( k['patch'], k['region'], k['champ'] )
 			#key = ( k['patch'], k['region'], k['tier'], k['champ'] )
-			games[key] += c['value']
+			region_games[key] += c['value']
+			tier = k['tier']
+			if tier in ["MASTER", "CHALLENGER"]:
+				tier = "DIAMOND"
+			tier_games[( k['patch'], tier, k['champ'] )] += c['value']
 
 		
-for key in games.keys():
-	final_data[key] = map( lambda x: float(x)/games[key], final_data[key])
+for key in region_games.keys():
+	region_data[key] = map( lambda x: float(x)/region_games[key], region_data[key])
 
-#print final_data[final_data.keys()[0]]
+for key in tier_games.keys():
+	tier_data[key] = map( lambda x: float(x)/tier_games[key], tier_data[key])
 
-ap_champs = {}
-for key in final_data:
-	if sum(final_data[key]) >= 1:
-		ap_champs[key] = final_data[key]
+#print region_data[region_data.keys()[0]]
+
+ap_champs = defaultdict(lambda: False)
+for key in region_data:
+	if sum(region_data[key]) >= 1:
+		ap_champs[key[2]] = True
+
+for key in tier_data:
+	if sum(tier_data[key]) >= 1:
+		ap_champs[key[2]] = True
+
+
+ap_region_data = { k:v for (k,v) in region_data.items() if ap_champs[k[2]]}
+print ap_region_data
+ap_tier_data = { k:v for (k,v) in tier_data.items() if ap_champs[k[2]]}
+
+all_ap_data = ap_region_data.values() + (ap_tier_data.values())
 
 #print(ap_champs)
 
@@ -68,14 +94,16 @@ for key in final_data:
 #print(pca.explained_variance_ratio_)
 
 grp = GaussianRandomProjection(2, random_state = 0)
-reduction = grp.fit_transform(ap_champs.values())
+grp.fit(all_ap_data)
+region_reduction = grp.transform(ap_region_data.values())
+tier_reduction = grp.transform(ap_tier_data.values())
 
-json_data = []
-for i in range(0,len(ap_champs.keys())):
-	key = ap_champs.keys()[i]
-	data = list(reduction[i])
-	num_games = games[key]
-	json_data.append( {
+region_json_data = []
+for i in range(0,len(ap_region_data.keys())):
+	key = ap_region_data.keys()[i]
+	data = list(region_reduction[i])
+	num_games = region_games[key]
+	region_json_data.append( {
 		"patch":key[0],
 		"region":key[1],
 		#"tier":key[2],
@@ -87,17 +115,35 @@ for i in range(0,len(ap_champs.keys())):
 		"games":num_games
 		}  )
 
-print(json_data[0])
+tier_json_data = []
+for i in range(0,len(ap_tier_data.keys())):
+	key = ap_tier_data.keys()[i]
+	data = list(tier_reduction[i])
+	num_games = tier_games[key]
+	tier_json_data.append( {
+		"patch":key[0],
+		"tier":key[1],
+		"champion":key[2],
+		"coordinate":{
+			"x":data[0],
+			"y":data[1]
+		},
+		"games":num_games
+		}  )
 
 for patch in ["5.11", "5.14"]:
-    for region in ["BR","EUNE","EUW","KR","LAN","LAS","NA","OCE","RU","TR"]:
-		filtered = filter(lambda x: x["patch"] == patch and x["region"] == region, json_data)
-		print filtered
-		with open("data/grp_" + patch + "_" + region, "w") as f:
+	for region in ["BR","EUNE","EUW","KR","LAN","LAS","NA","OCE","RU","TR"]:
+		filtered = filter(lambda x: x["patch"] == patch and x["region"] == region, region_json_data)
+		with open("data/by_patch_region/grp_" + patch + "_" + region + ".json", "w") as f:
+			json.dump(filtered, f)
+
+	for tier in ["BRONZE","SILVER","GOLD","PLATINUM","DIAMOND"]:
+		filtered = filter(lambda x: x["patch"] == patch and x["tier"] == tier, tier_json_data)
+		with open("data/by_patch_tier/grp_"+patch+"_"+tier +".json", "w") as f:
 			json.dump(filtered, f)
 
 
-plt.scatter(map(lambda x: x[0], reduction), map(lambda x: x[1], reduction))
+plt.scatter(map(lambda x: x[0], region_reduction), map(lambda x: x[1], region_reduction))
 plt.show()
 
 print time.time() - start_time, "seconds"
