@@ -60,14 +60,8 @@
       </div>
 
       <div class="row">
-      	 <coolData>Click here to load data!</coolData>
-          
-          <h4>Click on this text to update chart with new values</h4>
-      </div>
 
-      <div class="row gui-container">
-
-        <div class="col-md-1 left-div">
+        <div class="left-div col-md-3">
           <div id="region_selector" class="btn-group-vertical" role="group" aria-label="regions">
             <button type="button" class="btn btn-default active" id="ALL_REGIONS">All</button>
             <button type="button" class="btn btn-default" value="BR">BR</button>
@@ -83,7 +77,7 @@
           </div>
         </div>
 
-        <div class="center-div col-mid-6">
+        <div class="center-div col-md-6">
         
           <div class="graph-div">
             <d3ScatterPlot></d3ScatterPlot>
@@ -104,7 +98,7 @@
 
         </div>
 
-        <div class="col-md-3 right-div">
+        <div class="right-div col-md-3">
           <!--
           <div class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -264,14 +258,14 @@
     $('#region_selector button').click(function() {
       $(this).addClass('active').siblings().removeClass('active');
       selected_region = $(this).val();
-      setGameDataRegion(selected_patch, selected_region);
+      setGameData(selected_patch, selected_region, selected_tier);
     });
 
     var selected_tier = "ALL_TIERS";
     $('#tier_selector button').click(function() {
       $(this).addClass('active').siblings().removeClass('active');
       selected_tier = $(this).val();
-      setGameDataTier(selected_patch, selected_tier);
+      setGameData(selected_patch, selected_region, selected_tier);
     });
 
     var selected_patch = "5.11";
@@ -282,7 +276,7 @@
       } else {
         selected_patch = "5.14";
       }
-      setGameDataRegion(selected_patch, selected_region);
+      setGameData(selected_patch, selected_region, selected_tier);
     });
 
     </script>

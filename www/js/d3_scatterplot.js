@@ -4,7 +4,7 @@ var distance = [];
 
 // Setup settings for graphic
 var canvas_width = 500;
-var canvas_height = 300;
+var canvas_height = 400;
 var padding = 30; // for chart edges
 
 // Scale functions
@@ -279,20 +279,19 @@ function updateDeltaTable() {
 // Data elements
 //
 
-function setGameDataRegion(patch, region){
+function setGameData(patch, region, tier){
+    var file = ""
+    if( region == "ALL_REGIONS" && tier == "ALL_TIERS") {
+        file = "data/by_patch/grp_" + patch + ".json";
+    } else if ( region == "ALL_REGIONS") {
+        file = "data/by_patch_tier/grp_" + patch + "_" + tier + ".json"; 
+    } else if ( tier == "ALL_TIERS" ) {
+        file = "data/by_patch_region/grp_" + patch + "_" + region + ".json";
+    } else {
+        file = "data/by_patch_region_tier/grp_" + patch + "_" + region + "_" + tier + ".json";
+    }
     loadDataFromFile(
-        "data/by_patch_region/grp_" + patch + "_" + region + ".json",
-        function(json){
-            updateDataset(json);
-            updateScatterPlot();
-            updateDeltaTable();
-        }
-    );
-}
-
-function setGameDataTier(patch, tier) {
-    loadDataFromFile(
-        "data/by_patch_tier/grp_" + patch + "_" + tier + ".json",
+        file,
         function(json){
             updateDataset(json);
             updateScatterPlot();
