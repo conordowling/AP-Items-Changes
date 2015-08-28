@@ -19,6 +19,14 @@ var svg;
 // HTML element to put the visualization in
 var d3SP_element="d3ScatterPlot";
 
+// Tooltip
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>" + champion_index[d["champion"]]["name"] + "</strong>";
+  })
+
 
 // Create a scatter plot
 initializeRandomScatterPlot(10, 100);
@@ -34,7 +42,7 @@ initializeRandomScatterPlot(10, 100);
 //  None
 function initializeDataPointsFromDataset() {
     // Create Circles
-    console.log(this.dataset);
+    //console.log(this.dataset);
     this.svg.selectAll("circle")
         .data(dataset)
         .enter()
@@ -72,16 +80,18 @@ function initializeD3Visualization() {
         .attr("height", canvas_height)
 
     // Add to X axis
-    svg.append("g")
+    this.svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + (canvas_height - padding) + ")")
         .call(xAxis);
 
     // Add to Y axis
-    svg.append("g")
+    this.svg.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
+
+    this.svg.call(tip);
 
     // Next step
     initializeDataPointsFromDataset();
@@ -247,6 +257,12 @@ function updateCircles() {
         })
         .each(function(){
             d3  .select(this)
+            .on('mouseover',tip.show)
+            .on('mouseout', tip.hide);
+        })
+        /* // Mouseover image enlargement not functional
+        .each(function(){
+            d3  .select(this)
             .on('mouseover',function() {
                 d3  .select(this)
                     .transition()
@@ -254,7 +270,7 @@ function updateCircles() {
                     .attr("r", function(d){ 
                                 if (d == null)
                                     return 2;
-                                return (Math.log(d.games) + 5) * 3;
+                                return (Math.log(d.games) + 5) * 2;
                     }); // Change radius 
             })
             .on('mouseout',function () {
@@ -268,6 +284,7 @@ function updateCircles() {
                     }); // Change radius 
             })
         })
+        // */
         .each("end", function() { // End animation
             d3.select(this) // 'this' means the current element
                 .transition()
@@ -300,8 +317,10 @@ function updateDeltaTable() {
     newEntries = [];
     for(i in distance) {
         if(distance[i] > 0) {
+            if (champion_index[i] == null || champion_index[i] == undefined )
+                continue;
             d = distance[i];
-            console.log(i);
+            //console.log(i);
             c = champion_index[i].name;
             i = champion_index[i].image;
             table.innerHTML += "<div class='panel panel-default delta-panel'><div class='panel-body'>" + i + c + "</div></div>";
