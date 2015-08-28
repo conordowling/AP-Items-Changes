@@ -3,8 +3,13 @@ var dataset = []; // The data that is going to be rendered
 var distance = [];
 
 // Setup settings for graphic
+<<<<<<< HEAD
 var canvas_width = 500;
 var canvas_height = 400;
+=======
+var canvas_width = 1000;
+var canvas_height = 500;
+>>>>>>> 820b037e352f03a227e52bf593de03b0eee66659
 var padding = 30; // for chart edges
 
 // Scale functions
@@ -18,6 +23,14 @@ var svg;
 
 // HTML element to put the visualization in
 var d3SP_element="d3ScatterPlot";
+
+// Tooltip
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>" + champion_index[d["champion"]]["name"] + "</strong>";
+  })
 
 
 // Create a scatter plot
@@ -34,7 +47,7 @@ initializeRandomScatterPlot(10, 100);
 //  None
 function initializeDataPointsFromDataset() {
     // Create Circles
-    console.log(this.dataset);
+    //console.log(this.dataset);
     this.svg.selectAll("circle")
         .data(dataset)
         .enter()
@@ -72,16 +85,18 @@ function initializeD3Visualization() {
         .attr("height", canvas_height)
 
     // Add to X axis
-    svg.append("g")
+    this.svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + (canvas_height - padding) + ")")
         .call(xAxis);
 
     // Add to Y axis
-    svg.append("g")
+    this.svg.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
+
+    this.svg.call(tip);
 
     // Next step
     initializeDataPointsFromDataset();
@@ -237,15 +252,56 @@ function updateCircles() {
         .attr("cy", function(d) {
             return yScale(getY(d)); // Circle's Y
         })
+        .each(function(){
+            // Fill with image
+            d3  .select(this)
+                .style("fill", function(d){
+                    if (d == null) return null;
+                    return "url(#" + d["champion"] + ")";
+                });
+        })
+        .each(function(){
+            d3  .select(this)
+            .on('mouseover',tip.show)
+            .on('mouseout', tip.hide);
+        })
+        /* // Mouseover image enlargement not functional
+        .each(function(){
+            d3  .select(this)
+            .on('mouseover',function() {
+                d3  .select(this)
+                    .transition()
+                    .duration(200)
+                    .attr("r", function(d){ 
+                                if (d == null)
+                                    return 2;
+                                return (Math.log(d.games) + 5) * 2;
+                    }); // Change radius 
+            })
+            .on('mouseout',function () {
+                d3  .select(this)
+                    .transition()
+                    .duration(200)
+                    .attr("r", function(d){ 
+                                if (d == null)
+                                    return 2;
+                                return Math.log(d.games) + 5;
+                    }); // Change radius 
+            })
+        })
+        // */
         .each("end", function() { // End animation
             d3.select(this) // 'this' means the current element
-            .transition()
+                .transition()
                 .duration(500)
                 .attr("fill", "black") // Change color
-            .attr("r", "2"); // Change radius   
+                .attr("r", function(d){ 
+                                if (d == null)
+                                    return 2;
+                                return Math.log(d.games) + 5;
+                            } ); // Change radius   
         })
         .style("visibility", function(d) {
-            //console.log(d);
             return d == undefined ? "hidden" : "visible";
         });
 }
@@ -266,9 +322,11 @@ function updateDeltaTable() {
     newEntries = [];
     for(i in distance) {
         if(distance[i] > 0) {
+            if (champion_index[i] == null || champion_index[i] == undefined )
+                continue;
             d = distance[i];
-            console.log(i);
-            c = champion_index[i].name
+            //console.log(i);
+            c = champion_index[i].name;
             i = champion_index[i].image;
             table.innerHTML += "<div class='panel panel-default delta-panel'><div class='panel-body'>" + i + c + "</div></div>";
         }
@@ -334,7 +392,6 @@ function getX(data) {
     if (!data) return 0;
     return data.coordinate.x;
 }
-
 function getY(data) {
     if (!data) return 0;
     return data.coordinate.y;
