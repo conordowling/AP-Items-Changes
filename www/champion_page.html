@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="Conor Dowling and Alex Brigham">
+
+    <title>AP Item Changes Visualization</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Switch -->
+    <line href="css/bootstrap-switch.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/assets/css/docs.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/highlight.css" rel="stylesheet">
+
+    <!-- Bootstrap Theme -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha256-sHwgyDk4CGNYom267UJX364ewnY4Bh55d53pxP5WDug= sha512-mkkeSf+MM3dyMWg3k9hcAttl7IVHe2BA1o/5xKLl4kBaP0bih7Mzz/DBy4y6cNZCHtE2tPgYBYH/KtEjOQYKxA==" crossorigin="anonymous">
+
+    <!-- Custom Styles -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/d3-tip.css" rel="stylesheet">
+
+
+  </head>
+
+
+  <body>
+
+    <select class="form-control">
+      <option value="one">One</option>
+      <option value="two">Two</option>
+      <option value="three">Three</option>
+      <option value="four">Four</option>
+      <option value="five">Five</option>
+    </select>
+
+    <h1>Build Order Statistics</h1>
+
+    <h3>Boots</h3>
+    <div>
+
+    </div>
+
+    <h3>First Item</h3>
+    <div>
+
+    </div>
+
+    <h3>Second Item</h3>
+    <div>
+
+    </div>
+
+    <h3>Third Item</h3>
+    <div>
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- Load JQuery from site -->
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script> 
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Begin D3 Javascript -->
+    <script src="js/d3-tip.js"></script>
+    <script src="js/d3_scatterplot.js"></script>
+    <script>
+      // Loading static datasets
+      $.getJSON("data/item_index.json", function(json) {
+        item_index = json.data;
+      });
+      $.getJSON("data/champion_index.json", function(json) {
+        champion_index = json.data;
+        //Create list of champion IDs
+        champion_id_index = [];
+        for (var key in champion_index) {
+            if (key === 'length' || !champion_index.hasOwnProperty(key)) continue;
+            champion_id_index.push(key);
+            //console.log("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"]);
+            // And fetch all the images for the champions
+            var box_size = "25";
+            var x = "0"
+            var y = "0"
+            var imgURL = "http://ddragon.leagueoflegends.com/cdn/5.16.1/img/champion/" + champion_index[key]["image"]["full"] + "";
+
+            svg.append("pattern")
+                .attr("id", key)
+                .attr("patternUnits", "objectBoundingBox") //userSpaceOnUse or objectBoundingBox or maybe viewBox
+                .attr("x",x)
+                .attr("y",y)
+                .attr("width", box_size)
+                .attr("height", box_size)
+                //.attr("fill", "blue")
+                //.style("background-image", "url(" + imgURL + ")" )
+                //.style("background-size", "cover")
+                //.attr("viewBox", "0 0 60 55")
+                
+                .append("image")
+                .attr("xlink:href", imgURL)
+                .attr("x", x)
+                .attr("y", y)
+                .attr("preserveAspectRatio", "none")
+                .attr("width", box_size)
+                .attr("height", box_size) // */
+                ;
+        }
+      });
+
+      $.getJSON("data/region_index.json", function(json) {
+        region_index = json.data;
+      });
+
+      // Our data
+      $.getJSON("data/pca_dump.json", function(json) {
+        pca_dump = json;
+      });
+    </script>
+
+    <script type="text/javascript">
+      champion_build_frequency = [];
+      function loadBuildStatistics() {
+        var file = "data/champion_build_order_frequency.json";
+        loadDataFromFile(
+        file,
+        function(json){
+            champion_build_frequency = json;
+          }
+        );
+      }
+      loadBuildStatistics();
+
+      function selectStatisticSet(patch, region, tier, champ) {
+        for(var i in champion_build_frequency) {
+          value = champion_build_frequency[i];
+          if(value.champ == champ && value.patch == patch && value.region == region && value.tier == tier) {
+            Console.log(value);
+            updateBuildStats(value);
+            return;
+          }
+        }
+      }
+      selectStatisticSet("5.11", "ALL_REGIONS", "ALL_TIERS", 1);
+
+      function updateBuildStats(stats) {
+        return;
+
+      }
+
+    </script>
+
+  </body>

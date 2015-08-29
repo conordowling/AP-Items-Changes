@@ -5,7 +5,7 @@ var distance = [];
 
 // Setup settings for graphic
 
-var canvas_width = 1000;
+var canvas_width = 800;
 var canvas_height = 500;
 var padding = 30; // for chart edges
 
