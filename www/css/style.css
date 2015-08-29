@@ -20,14 +20,21 @@ body {
 }
 
 .center-div {
+  display: inline-block;
+  float: center;
+  width: 800px;
   text-align:center;
 }
 
 .left-div {
+  display: inline-block;
+  float:left;
   text-align:right;
 }
 
 .right-div {
+  display: inline-block;
+  float: right;
   text-align:left;
 }
 
@@ -39,6 +46,8 @@ body {
 }
 
 .delta-container {
+  display: inline-block;
+
   padding:0px;
   overflow:scroll;
   height:300px;
