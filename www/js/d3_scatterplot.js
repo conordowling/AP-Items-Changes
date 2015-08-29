@@ -3,13 +3,9 @@ var dataset = []; // The data that is going to be rendered
 var distance = [];
 
 // Setup settings for graphic
-<<<<<<< HEAD
-var canvas_width = 500;
-var canvas_height = 400;
-=======
+
 var canvas_width = 1000;
 var canvas_height = 500;
->>>>>>> 820b037e352f03a227e52bf593de03b0eee66659
 var padding = 30; // for chart edges
 
 // Scale functions
@@ -328,7 +324,7 @@ function updateDeltaTable() {
             //console.log(i);
             c = champion_index[i].name;
             i = champion_index[i].image;
-            table.innerHTML += "<div class='panel panel-default delta-panel'><div class='panel-body'>" + i + c + "</div></div>";
+            table.innerHTML += "<div class='panel panel-default delta-panel'><div class='panel-body'><img src='" + i +"'></img>" + c + "</div></div>";
         }
     }
 }
