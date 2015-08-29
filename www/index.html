@@ -196,30 +196,24 @@
           champion_id_index.push(key);
           //console.log("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"]);
           // And fetch all the images for the champions
-          var box_size = "25";
+          var box_size = "35";
           var x = "0"
           var y = "0"
           var imgURL = "http://ddragon.leagueoflegends.com/cdn/5.16.1/img/champion/" + champion_index[key]["image"]["full"] + "";
 
-          svg.append("pattern")
-              .attr("id", key)
-              .attr("patternUnits", "objectBoundingBox") //userSpaceOnUse or objectBoundingBox or maybe viewBox
-              .attr("x",x)
-              .attr("y",y)
-              .attr("width", box_size)
-              .attr("height", box_size)
-              //.attr("fill", "blue")
-              //.style("background-image", "url(" + imgURL + ")" )
-              //.style("background-size", "cover")
-              //.attr("viewBox", "0 0 60 55")
-              
+          svg .append("pattern")
+                .attr("id", key)
+                .attr("patternUnits", "objectBoundingBox") //userSpaceOnUse or objectBoundingBox or maybe viewBox
+                .attr("x", x)
+                .attr("y", y)
+                .attr("width" , box_size)
+                .attr("height", box_size)
               .append("image")
-              .attr("xlink:href", imgURL)
-              .attr("x", x)
-              .attr("y", y)
-              .attr("preserveAspectRatio", "none")
-              .attr("width", box_size)
-              .attr("height", box_size) // */
+                .attr("xlink:href", imgURL)
+                .attr("x", x)
+                .attr("y", y)
+                .attr("width", box_size)
+                .attr("height", box_size) // */
               ;
       }
     });

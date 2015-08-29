@@ -1,5 +1,6 @@
 // Global data
 var dataset = []; // The data that is going to be rendered
+var oldDataSet = [];
 var distance = [];
 
 // Setup settings for graphic
@@ -148,6 +149,7 @@ function updateDataset(newDataset){
         console.log("Attempted to set dataset to null or undefined. No changes were made.");
         return;
     }
+    this.oldDataSet = dataset;
     //console.log("Dataset:" + dataset.length + "\tNewdataset:" + newDataset.length + "\tCompare:" +( newDataset.length > dataset.length ? newDataset.length : dataset.length ))
     for (var i = 0 ; i < ( newDataset.length > this.dataset.length ? newDataset.length : this.dataset.length ) ; i++ ){
         this.distance[i] = Math.sqrt( Math.pow(getX(this.dataset[i]) - getX(newDataset[i]),2) + Math.pow(getY(this.dataset[i]) - getY(newDataset[i]),2) );
@@ -210,6 +212,16 @@ function updateScaleAndAxis() {
 
 function updateCircles() {
 
+    var transformingRadius = function(elem){
+        return 5;
+    }
+    var mouseOverRadius = function(elem){
+        return 17;
+    }
+    var finalRadius = function(elem){
+        return 10;
+    }
+
     this.svg.selectAll("circle")
         .data(dataset)
         .enter()
@@ -220,9 +232,7 @@ function updateCircles() {
         .attr("cy", function(d) {
             return yScale(getY(d));
         })
-        .attr("r", function(d){
-            return 2;
-        })
+        .attr("r", transformingRadius)
         .style("visibility", function(d) {
             //console.log(d);
             return d == undefined ? "hidden" : "visible";
@@ -235,7 +245,7 @@ function updateCircles() {
         .each("start", function() { // Start animation
             d3.select(this) // 'this' means the current element
                 .attr("fill", "red") // Change color
-                .attr("r", 5); // Change size
+                .attr("r", transformingRadius); // Change size
         })
         .delay(function(d, i) {
             return i / dataset.length * 500; // Dynamic delay (i.e. each item delays a little longer)
@@ -255,33 +265,40 @@ function updateCircles() {
                     return "url(#" + d["champion"] + ")";
                 });
         })
+        /*
         .each(function(){
             d3  .select(this)
             .on('mouseover',tip.show)
             .on('mouseout', tip.hide);
-        })
-        /* // Mouseover image enlargement not functional
+        }) //*/
+         // FIXME: Mouseover image enlargement not functional
         .each(function(){
             d3  .select(this)
-            .on('mouseover',function() {
+            .on('mouseover',function(selected) {
+                tip.show(selected);
+                svg.selectAll('.node')
+                    .sort(function(a, b) {
+                        if (a.id === selected.id) {
+                            return 1;
+                        } else {
+                            if (b.id === selected.id) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
                 d3  .select(this)
                     .transition()
                     .duration(200)
-                    .attr("r", function(d){ 
-                                if (d == null)
-                                    return 2;
-                                return (Math.log(d.games) + 5) * 2;
-                    }); // Change radius 
+                    .attr("r", mouseOverRadius);
             })
-            .on('mouseout',function () {
+            .on('mouseout',function (selected) {
+                tip.hide(selected);
                 d3  .select(this)
                     .transition()
                     .duration(200)
-                    .attr("r", function(d){ 
-                                if (d == null)
-                                    return 2;
-                                return Math.log(d.games) + 5;
-                    }); // Change radius 
+                    .attr("r", finalRadius);
             })
         })
         // */
@@ -290,11 +307,7 @@ function updateCircles() {
                 .transition()
                 .duration(500)
                 .attr("fill", "black") // Change color
-                .attr("r", function(d){ 
-                                if (d == null)
-                                    return 2;
-                                return Math.log(d.games) + 5;
-                            } ); // Change radius   
+                .attr("r", finalRadius);  
         })
         .style("visibility", function(d) {
             return d == undefined ? "hidden" : "visible";
@@ -405,5 +418,3 @@ function compare(a, b){
         return 0;
     }
 }
-
-
