@@ -377,20 +377,23 @@ function updateScatterPlot(){
 
 function updateDeltaTable() {
     var table = document.getElementById("delta-table")
-    table.innerHTML = '';
+    var newTable = "";
 
-    newEntries = [];
-    for(i in distance) {
-        if(distance[i] > 0) {
+    for(var i = 0; i < this.distance.length; i++) {
+        if(this.distance[i] > 0) {
             if (champion_index[i] == null || champion_index[i] == undefined )
                 continue;
-            d = distance[i];
-            //console.log(i);
-            c = champion_index[i].name;
-            i = champion_index[i].image;
-            table.innerHTML += "<div class='panel panel-default delta-panel'><div class='panel-body'><img src='" + i +"'></img>" + c + "</div></div>";
+            var distance = this.distance[i];
+            var champion_name = champion_index[i].name;
+            var champion_image = "http://ddragon.leagueoflegends.com/cdn/5.16.1/img/champion/" + champion_index[i]["image"]["full"] + "";
+
+            var newRow = "<div class='panel panel-default delta-panel'><div class='panel-body'><img src='" + champion_image +"' height='30'>" + champion_name + "\tDistance: " + Math.round(this.distance[i]) + "</div></div>";
+
+            newTable = newTable.concat(newRow);
         }
     }
+
+    table.innerHTML = newTable;
 }
 
 //
