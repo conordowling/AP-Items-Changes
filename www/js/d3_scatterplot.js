@@ -1,10 +1,19 @@
-// Global data
-var dataset = []; // The data that is going to be rendered
+// **************************************
+// * Variable initializations           *
+// **************************************
+
+// The data that is going to be rendered
+// Format:
+// { "champion": championID, "coordinate": {"x": xCoordinate, "y": yCoordinate}, "games": numberOfGames, "patch": patch, "region": region, "tier": tier }
+var dataset = [];
+
+// The old dataset. Used for comparisons
 var oldDataSet = [];
+
+// Euclidean distance between the current dataset and the old dataset
 var distance = [];
 
 // Setup settings for graphic
-
 var canvas_width = 800;
 var canvas_height = 500;
 var padding = 30; // for chart edges
@@ -18,10 +27,10 @@ var xAxis, yAxis;
 // SVG Object
 var svg;
 
-// HTML element to put the visualization in
+// Name of HTML element to put the visualization in
 var d3SP_element="d3ScatterPlot";
 
-// Tooltip
+// Tooltip function
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
@@ -30,8 +39,14 @@ var tip = d3.tip()
   })
 
 
+
+// **************************************
+// * Plot creation                      *
+// **************************************
+
 // Create a scatter plot
 initializeRandomScatterPlot(10, 100);
+
 
 
 // **************************************
@@ -42,6 +57,8 @@ initializeRandomScatterPlot(10, 100);
 // This follows the initializeD3Visualization
 // Arguments:
 //  None
+// Returns:
+//  Nothing
 function initializeDataPointsFromDataset() {
     // Create Circles
     //console.log(this.dataset);
@@ -62,6 +79,8 @@ function initializeDataPointsFromDataset() {
 // This follows initializeScale
 // Arguments:
 //  None
+// Returns:
+//  Nothing
 function initializeD3Visualization() {
     // Define X axis
     this.xAxis = d3.svg.axis()
@@ -103,6 +122,8 @@ function initializeD3Visualization() {
 // Arguments:
 //  newxScale: The bounds of the X-axis. In the form of [xmin, xmax]
 //  newyScale: The bounds of the Y-axis. In the form of [ymin, ymax]
+// Returns:
+//  Nothing
 function initializeScale(newxScale, newyScale) {
     // xScale is width of graphic
     this.xScale = d3.scale.linear()
@@ -117,6 +138,12 @@ function initializeScale(newxScale, newyScale) {
     initializeD3Visualization();
 };
 
+
+// Function to build the scatterplot based on data
+// Arguments:
+//  data: See dataset for format of data
+// Returns:
+//  Nothing
 function initializeScatterPlot(data) {
     this.dataset = data;
     // Next step
@@ -130,6 +157,12 @@ function initializeScatterPlot(data) {
     );
 };
 
+// Function to build the scatterplot based on randomly generated data
+// Arguments:
+//  numDataPoints:  Number of points to be plotted
+//  maxRange:       Maximum X,Y value of a given point (int)
+// Returns:
+//  Nothing
 function initializeRandomScatterPlot(numDataPoints, maxRange) {
     // Get the random points
     var randomPoints = getRandomPoints(numDataPoints, maxRange);
@@ -137,6 +170,8 @@ function initializeRandomScatterPlot(numDataPoints, maxRange) {
     initializeScatterPlot(randomPoints);
 };
  
+
+
 // **************************************
 // * Update functions                   *
 // **************************************
@@ -145,19 +180,34 @@ function initializeRandomScatterPlot(numDataPoints, maxRange) {
 // Plot
 //
 
+// Update the data that plot uses to create the circles
+// Arguments:
+//  newDataset: See dataset variable for appropriate format
+// Returns:
+//  Nothing
 function updateDataset(newDataset){
+
+    // Input validation
     if (newDataset == null || newDataset == undefined){
         console.log("Attempted to set dataset to null or undefined. No changes were made.");
         return;
     }
+    // Store the old dataset to do comparisons to the new one
     this.oldDataSet = dataset;
-    //console.log("Dataset:" + dataset.length + "\tNewdataset:" + newDataset.length + "\tCompare:" +( newDataset.length > dataset.length ? newDataset.length : dataset.length ))
+
+    // Calculate the distance between the old points and the new ones
     for (var i = 0 ; i < ( newDataset.length > this.dataset.length ? newDataset.length : this.dataset.length ) ; i++ ){
         this.distance[i] = Math.sqrt( Math.pow(getX(this.dataset[i]) - getX(newDataset[i]),2) + Math.pow(getY(this.dataset[i]) - getY(newDataset[i]),2) );
     }
     this.dataset = newDataset;
 }
 
+// Update the bounds and size of the chart
+// Arguments:
+//  domain: [minY, maxY]
+//  range : [minX, maxX]
+// Returns:
+//  Nothing
 function updateScaleAndAxisWithValues(domain, range) {
 
     this.xScale.domain(range);
@@ -175,6 +225,9 @@ function updateScaleAndAxisWithValues(domain, range) {
         .call(yAxis);
 }
 
+// Update the bounds and size of the chart based on the values in the dataset
+// Returns:
+//  Nothing
 function updateScaleAndAxis() {
 
     updateScaleAndAxisWithValues(
@@ -188,41 +241,27 @@ function updateScaleAndAxis() {
     ]
 
     )
-    /*
-    this.xScale.domain([
-        d3.min(dataset, getX),
-        d3.max(dataset, getX)
-    ]);
-
-    this.yScale.domain([
-        d3.min(dataset, getY),
-        d3.max(dataset, getY)
-    ]);
-
-    this.svg.select(".x.axis")
-        .transition()
-        .duration(1000)
-        .call(xAxis);
-
-    this.svg.select(".y.axis")
-        .transition()
-        .duration(100)
-        .call(yAxis);
-    */
 }
 
+// Update the location of the circles based on the values in the dataset
+// Returns:
+//  Nothing
 function updateCircles() {
 
-    var transformingRadius = function(elem){
-        return 5;
-    }
-    var mouseOverRadius = function(elem){
-        return 17;
-    }
+    // The radius of the circles while at rest
     var finalRadius = function(elem){
         return 10;
     }
+    // The radius of the circles while in motion
+    var transformingRadius = function(elem){
+        return 5;
+    }
+    // The radius of the circles while being hovered over
+    var mouseOverRadius = function(elem){
+        return 17;
+    }
 
+    // Generate new circles if any are missing
     this.svg.selectAll("circle")
         .data(dataset)
         .enter()
@@ -233,20 +272,27 @@ function updateCircles() {
         .attr("cy", function(d) {
             return yScale(getY(d));
         })
-        .attr("r", transformingRadius)
+        .attr("r", transformingRadius);
+
+    // Set visibility on circles
+    this.svg.selectAll("circle")
         .style("visibility", function(d) {
-            //console.log(d);
             return d == undefined ? "hidden" : "visible";
         });
 
+    // Move old circles to a new location
     this.svg.selectAll("circle")
-        .data(dataset) // Update with new data
-        .transition() // Transition from old to new
-        .duration(1000) // Length of animation
-        .each("start", function() { // Start animation
-            d3.select(this) // 'this' means the current element
-                .attr("fill", "red") // Change color
-                .attr("r", transformingRadius); // Change size
+        // This may cause inconsistancies, but improves performance
+        //.filter(function(d) { if (d != null || d != undefined) return true;}) // Only work on elements that exist
+        // Duplicate command: Probably unnecessary
+        //.data(dataset)
+        .transition()
+        .duration(1000)
+        // At the start of the move, perform these operations
+        .each("start", function() {
+            d3.select(this)
+                //.attr("fill", "red") // Legacy: circles now have a image fill, this does not apply correctly
+                .attr("r", transformingRadius);
         })
         .delay(function(d, i) {
             return i / dataset.length * 500; // Dynamic delay (i.e. each item delays a little longer)
@@ -256,65 +302,70 @@ function updateCircles() {
             return xScale(getX(d));
         })
         .attr("cy", function(d) {
-            return yScale(getY(d)); // Circle's Y
+            return yScale(getY(d));
         })
+        // Fill the circle with an image
         .each(function(){
-            // Fill with image
             d3  .select(this)
                 .style("fill", function(d){
                     if (d == null) return null;
                     return "url(#" + d["champion"] + ")";
                 });
         })
-        /*
+        // Add the mouseover and mouseout functions
+        //  - This includes the zoom and the tooltip
         .each(function(){
             d3  .select(this)
-            .on('mouseover',tip.show)
-            .on('mouseout', tip.hide);
-        }) //*/
-         // FIXME: Mouseover image enlargement not functional
-        .each(function(){
-            d3  .select(this)
-            .on('mouseover',function(selected) {
-                tip.show(selected);
-                svg.selectAll('.node')
-                    .sort(function(a, b) {
-                        if (a.id === selected.id) {
-                            return 1;
-                        } else {
-                            if (b.id === selected.id) {
-                                return -1;
+                .on('mouseover',function(selected) {
+
+                    // Add the tooltip
+                    tip.show(selected);
+                    
+                    // Bring the active circle to the foreground
+                    // Problems:    - High performance cost
+                    //              - Causes some reodering elsewhere which is a little distracting and looks unprofessional
+                    // Update:      Problems reduced with filter. TODO: Test before release
+                    svg.selectAll('circle')
+                        .filter(function(d) { if (d != null || d != undefined) return true;})
+                        .sort(function(a, b) {
+                            if (a.champion === selected.champion) {
+                                return 1;
                             } else {
-                                return 0;
+                                if (b.champion === selected.champion) {
+                                    return -1;
+                                } else {
+                                    return 0;
+                                }
                             }
-                        }
-                    });
-                d3  .select(this)
-                    .transition()
-                    .duration(200)
-                    .attr("r", mouseOverRadius);
-            })
-            .on('mouseout',function (selected) {
-                tip.hide(selected);
-                d3  .select(this)
-                    .transition()
-                    .duration(200)
-                    .attr("r", finalRadius);
-            })
+                        });
+
+                    // Set the radius
+                    d3  .select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("r", mouseOverRadius);
+                })
+                .on('mouseout',function (selected) {
+                    tip.hide(selected);
+                    d3  .select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("r", finalRadius);
+                })
         })
-        // */
+        // Once the move is complete, perform these operations
         .each("end", function() { // End animation
             d3.select(this) // 'this' means the current element
                 .transition()
                 .duration(500)
-                .attr("fill", "black") // Change color
+                //.attr("fill", "black") // Legacy: circles now have a image fill, this does not apply correctly
                 .attr("r", finalRadius);  
         })
-        .style("visibility", function(d) {
-            return d == undefined ? "hidden" : "visible";
-        });
 }
 
+// Update the axis and the circles based on the dataset
+// Returns:
+//  Nothing
 function updateScatterPlot(){
     updateScaleAndAxis();
     updateCircles();
@@ -372,6 +423,14 @@ function setGameData(patch, region, tier){
 // * Misc functions                     *
 // **************************************
 
+// Create random data points
+// Returns:
+//  Array of: { "coordinate": {"x": x, "y": y}}
+// Arguments:
+//  volume: number of points
+//  maxValue: Upper bound on the random point
+// Returns:
+//  The array
 function getRandomPoints(volume, maxValue){
     var data = [];
     for (var i = 0; i < volume; i++) {
@@ -384,6 +443,13 @@ function getRandomPoints(volume, maxValue){
     return data;
 }
 
+// Load JSON from a web file
+// Note: Not tested cross-server
+// Arguments:
+//  filename: The name and path of the JSON file
+//  cb: Function with the payload as it's argument
+// Returns:
+//  Nothing
 function loadDataFromFile(filename, cb){
     //TODO: Add some safety
     $.getJSON(filename, 
@@ -397,18 +463,38 @@ function loadDataFromFile(filename, cb){
         );
 }
 
-function getX(data) {
-    if (!data) return 0;
-    return data.coordinate.x;
+// Get the X-coordinate from the given data point
+// Argument:
+//  element: Object to obtain the x-value of
+// Returns:
+//  The x-value, or 0 if element is null
+function getX(element) {
+    if (!element) return 0;
+    return element.coordinate.x;
 }
-function getY(data) {
-    if (!data) return 0;
-    return data.coordinate.y;
+
+// Get the Y-coordinate from the given data point
+// Argument:
+//  element: Object to obtain the y-value of
+// Returns:
+//  The y-value, or 0 if element is null
+function getY(element) {
+    if (!element) return 0;
+    return element.coordinate.y;
 }
-function getValue(data){
-    if (!data) return 0;
-    return data.champion;
+
+// Get the value/ID from the given data point
+// Argument:
+//  element: Object to obtain the value of
+// Returns:
+//  The value, or 0 if element is null
+function getValue(element){
+    if (!element) return 0;
+    return element.champion;
 }
+
+// A compare function based on getValue
+// See Javascript compare functions for I/O
 function compare(a, b){
     if (getValue(a) > getValue(b)){
         return 1;
