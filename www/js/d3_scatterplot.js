@@ -5,13 +5,13 @@
 // The data that is going to be rendered
 // Format:
 // { "champion": championID, "coordinate": {"x": xCoordinate, "y": yCoordinate}, "games": numberOfGames, "patch": patch, "region": region, "tier": tier }
-var dataset = [];
+dataset = [];
 
 // The old dataset. Used for comparisons
-var oldDataSet = [];
+oldDataset = [];
 
 // Euclidean distance between the current dataset and the old dataset
-var distance = [];
+distance = [];
 
 // Setup settings for graphic
 var canvas_width = 800;
@@ -25,7 +25,7 @@ var xScale, yScale;
 var xAxis, yAxis;
 
 // SVG Object
-var svg;
+svg = {};
 
 // Name of HTML element to put the visualization in
 var d3SP_element="d3ScatterPlot";
@@ -61,7 +61,7 @@ initializeRandomScatterPlot(10, 100);
 //  Nothing
 function initializeDataPointsFromDataset() {
     // Create Circles
-    //console.log(this.dataset);
+    //console.log(dataset);
     this.svg.selectAll("circle")
         .data(dataset)
         .enter()
@@ -145,7 +145,7 @@ function initializeScale(newxScale, newyScale) {
 // Returns:
 //  Nothing
 function initializeScatterPlot(data) {
-    this.dataset = data;
+    dataset = data;
     // Next step
     initializeScale(
         [
@@ -193,13 +193,13 @@ function updateDataset(newDataset){
         return;
     }
     // Store the old dataset to do comparisons to the new one
-    this.oldDataSet = dataset;
+    oldDataset =  dataset; //jQuery.extend(true, {}, dataset);
 
     // Calculate the distance between the old points and the new ones
-    for (var i = 0 ; i < ( newDataset.length > this.dataset.length ? newDataset.length : this.dataset.length ) ; i++ ){
-        this.distance[i] = Math.sqrt( Math.pow(getX(this.dataset[i]) - getX(newDataset[i]),2) + Math.pow(getY(this.dataset[i]) - getY(newDataset[i]),2) );
+    for (var i = 0 ; i < ( newDataset.length > dataset.length ? newDataset.length : dataset.length ) ; i++ ){
+        distance[i] = Math.sqrt( Math.pow(getX(dataset[i]) - getX(newDataset[i]),2) + Math.pow(getY(dataset[i]) - getY(newDataset[i]),2) );
     }
-    this.dataset = newDataset;
+    dataset = newDataset;
 }
 
 // Update the bounds and size of the chart
@@ -214,12 +214,12 @@ function updateScaleAndAxisWithValues(domain, range) {
 
     this.yScale.domain(domain);
 
-    this.svg.select(".x.axis")
+    svg.select(".x.axis")
         .transition()
         .duration(1000)
         .call(xAxis);
 
-    this.svg.select(".y.axis")
+    svg.select(".y.axis")
         .transition()
         .duration(100)
         .call(yAxis);
@@ -262,7 +262,7 @@ function updateCircles() {
     }
 
     // Generate new circles if any are missing
-    this.svg.selectAll("circle")
+    svg.selectAll("circle")
         .data(dataset)
         .enter()
         .append("circle")
@@ -275,13 +275,13 @@ function updateCircles() {
         .attr("r", transformingRadius);
 
     // Set visibility on circles
-    this.svg.selectAll("circle")
+    svg.selectAll("circle")
         .style("visibility", function(d) {
             return d == undefined ? "hidden" : "visible";
         });
 
     // Move old circles to a new location
-    this.svg.selectAll("circle")
+    svg.selectAll("circle")
         // This may cause inconsistancies, but improves performance
         //.filter(function(d) { if (d != null || d != undefined) return true;}) // Only work on elements that exist
         // Duplicate command: Probably unnecessary
@@ -318,6 +318,7 @@ function updateCircles() {
             d3  .select(this)
                 .on('mouseover',function(selected) {
 
+
                     // Add the tooltip
                     tip.show(selected);
                     
@@ -345,6 +346,7 @@ function updateCircles() {
                         .duration(200)
                         .attr("r", mouseOverRadius);
                 })
+
                 .on('mouseout',function (selected) {
                     tip.hide(selected);
                     d3  .select(this)
@@ -379,15 +381,14 @@ function updateDeltaTable() {
     var table = document.getElementById("delta-table")
     var newTable = "";
 
-    for(var i = 0; i < this.distance.length; i++) {
-        if(this.distance[i] > 0) {
+    for(var i = 0; i < distance.length; i++) {
+        if(distance[i] > 0) {
             if (champion_index[i] == null || champion_index[i] == undefined )
                 continue;
-            var distance = this.distance[i];
             var champion_name = champion_index[i].name;
             var champion_image = "http://ddragon.leagueoflegends.com/cdn/5.16.1/img/champion/" + champion_index[i]["image"]["full"] + "";
 
-            var newRow = "<div class='panel panel-default delta-panel'><div class='panel-body'><img src='" + champion_image +"' height='30'>" + champion_name + "\tDistance: " + Math.round(this.distance[i]) + "</div></div>";
+            var newRow = "<div class='panel panel-default delta-panel'><div class='panel-body'><img src='" + champion_image +"' height='30'>" + champion_name + "\tDistance: " + Math.round(distance[i]) + "</div></div>";
 
             newTable = newTable.concat(newRow);
         }
@@ -417,6 +418,7 @@ function setGameData(patch, region, tier){
             updateDataset(json);
             updateScatterPlot();
             updateDeltaTable();
+
         }
     );
 }
