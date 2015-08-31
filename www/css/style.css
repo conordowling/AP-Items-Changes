@@ -49,9 +49,9 @@ body {
   display: inline-block;
 
   padding:0px;
-  overflow:scroll;
-  height:300px;
-  width:200px;
+  overflow:auto;
+  height:500px;
+  width:250px;
 }
 
 .delta-panel {
@@ -60,3 +60,23 @@ body {
   height:50px;
   border-radius:0px;
 }
+
+.alignleft {
+  float: left;
+  text-align:left;
+  margin-top:-10px;
+}
+.aligncenter {
+  float: left;
+  width:50%;
+  text-align:left;
+  margin-top:-5px;
+  padding-left:10px;
+}
+.alignright {
+ float: left;
+ width:33.33333%;
+ text-align:right;
+ margin-top:-5px;
+
+}​

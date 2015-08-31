@@ -325,7 +325,7 @@ function updateCircles() {
                     // Problems:    - High performance cost
                     //              - Causes some reodering elsewhere which is a little distracting and looks unprofessional
                     // Update:      Problems reduced with filter. TODO: Test before release
-                    svg.selectAll('circle')
+                    /*svg.selectAll('circle')
                         .filter(function(d) { if (d != null || d != undefined) return true;})
                         .sort(function(a, b) {
                             if (a.champion === selected.champion) {
@@ -338,6 +338,7 @@ function updateCircles() {
                                 }
                             }
                         });
+                    */
 
                     // Set the radius
                     d3  .select(this)
@@ -379,18 +380,35 @@ function updateDeltaTable() {
     var table = document.getElementById("delta-table")
     var newTable = "";
 
+    var entries = [];
     for(var i = 0; i < this.distance.length; i++) {
         if(this.distance[i] > 0) {
             if (champion_index[i] == null || champion_index[i] == undefined )
                 continue;
-            var distance = this.distance[i];
+            var distance;
+            if(oldDataSet.length != dataset.length) {
+                distance = "-";
+            } else {
+                distance = Math.round(this.distance[i]*100)/100;
+            }
             var champion_name = champion_index[i].name;
             var champion_image = "http://ddragon.leagueoflegends.com/cdn/5.16.1/img/champion/" + champion_index[i]["image"]["full"] + "";
 
-            var newRow = "<div class='panel panel-default delta-panel'><div class='panel-body'><img src='" + champion_image +"' height='30'>" + champion_name + "\tDistance: " + Math.round(this.distance[i]) + "</div></div>";
+            var newRow = "<div class='panel panel-default delta-panel'><div class='panel-body'><img src='" + champion_image +"' height='30' class='alignleft'><p class='aligncenter'>" + champion_name + "</p><p class='alignright'>" + distance + "</p><div style='clear: both;'></div></div></div>";
 
-            newTable = newTable.concat(newRow);
+            var entry = Object();
+            entry.html = newRow;
+            entry.distance = distance;
+            entries.push(entry);
+            
         }
+    }
+
+    //sort entries by distance
+    entries.sort(function(a,b){ return b.distance - a.distance});
+
+    for(var i in entries) {
+        newTable = newTable.concat(entries[i].html);
     }
 
     table.innerHTML = newTable;

@@ -32,37 +32,126 @@
 
   <body>
 
-    <select class="form-control">
-      <option value="one">One</option>
-      <option value="two">Two</option>
-      <option value="three">Three</option>
-      <option value="four">Four</option>
-      <option value="five">Five</option>
-    </select>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">#lcsbigdata</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Overview</a></li>
+            <li><a href="champion_page.html">Champions</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Visualizing AP Item Changes</h1>
+        <p class="lead">We used dimensionality reduction to plot average champion builds in two dimensions.<br>The closer two champions are, the more similar their builds.</p>
+      </div>
+
+      <div class="row">
+
+        <div class="left-div">
+          <div id="region_selector" class="btn-group-vertical" role="group" aria-label="regions">
+            <button type="button" class="btn btn-default active" value="ALL_REGIONS">All</button>
+            <button type="button" class="btn btn-default" value="BR">BR</button>
+            <button type="button" class="btn btn-default" value="EUNE">EUNE</button>
+            <button type="button" class="btn btn-default" value="EUW">EUW</button>
+            <button type="button" class="btn btn-default" value="KR">KR</button>
+            <button type="button" class="btn btn-default" value="LAN">LAN</button>
+            <button type="button" class="btn btn-default" value="LAS">LAS</button>
+            <button type="button" class="btn btn-default" value="NA">NA</button>
+            <button type="button" class="btn btn-default" value="OCE">OCE</button>
+            <button type="button" class="btn btn-default" value="RU">RU</button>
+            <button type="button" class="btn btn-default" value="TR">TR</button>
+          </div>
+        </div>
+
+        <div class="center-div">
+        
+          <div class="graph-div">
+            <d3ScatterPlot></d3ScatterPlot>
+          </div>
+
+          <div id="tier_selector" class="btn-group" role="group" aria-label="tiers">
+            <button type="button" class="btn btn-default" value="BRONZE">Bronze</button>
+            <button type="button" class="btn btn-default" value="SILVER">Silver</button>
+            <button type="button" class="btn btn-default" value="GOLD">Gold</button>
+            <button type="button" class="btn btn-default" value="PLATINUM">Platinum</button>
+            <button type="button" class="btn btn-default" value="DIAMOND">Diamond+</button>
+            <button type="button" class="btn btn-default active" value="ALL_TIERS">All</button>
+          </div>
+
+          <div>
+          <input type="checkbox" name="patch-switch" checked data-on-text="5.11" data-off-text="5.14" >
+          </div>
+
+        </div>
+
+        <div class="right-div col-md-3">
+          <select class="form-control" id="champ_selector">
+      
+          </select>
+          <div class="delta-container" id="delta-table">
+            
+          </div>
+
+        </div>
+
+      </div>
+    </div><!-- /.container -->
+
+    
 
     <h1>Build Order Statistics</h1>
 
-    <h3>Boots</h3>
-    <div>
 
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Boots</h3>
+      </div>
+      <div class="panel-body">
+      Panel Content
+      </div>
     </div>
 
-    <h3>First Item</h3>
-    <div>
-
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">First Item</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
     </div>
 
-    <h3>Second Item</h3>
-    <div>
-
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Second Item</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
     </div>
 
-    <h3>Third Item</h3>
-    <div>
-
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Third Item</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
     </div>
-
-
 
 
 
@@ -120,22 +209,22 @@
                 .attr("height", box_size) // */
                 ;
         }
+        populateChampionDropdown();
       });
 
       $.getJSON("data/region_index.json", function(json) {
         region_index = json.data;
       });
 
-      // Our data
-      $.getJSON("data/pca_dump.json", function(json) {
-        pca_dump = json;
-      });
     </script>
 
     <script type="text/javascript">
+      
+
+
       champion_build_frequency = [];
-      function loadBuildStatistics() {
-        var file = "data/champion_build_order_frequency.json";
+      function loadBuildStatistics(path, region, tier, champ) {
+        var file = "data/champion_builds/" + champ.toString() + "_" + patch + "_" + region + "_" + tier +  ".json";
         loadDataFromFile(
         file,
         function(json){
@@ -143,24 +232,66 @@
           }
         );
       }
-      loadBuildStatistics();
-
-      function selectStatisticSet(patch, region, tier, champ) {
-        for(var i in champion_build_frequency) {
-          value = champion_build_frequency[i];
-          if(value.champ == champ && value.patch == patch && value.region == region && value.tier == tier) {
-            Console.log(value);
-            updateBuildStats(value);
-            return;
-          }
-        }
-      }
-      selectStatisticSet("5.11", "ALL_REGIONS", "ALL_TIERS", 1);
+      loadBuildStatistics("5.11", "ALL_REGIONS", "ALL_TIERS", 1);
 
       function updateBuildStats(stats) {
         return;
 
       }
+
+    </script>
+
+    <script>
+    var selected_champion = 1;
+    var selected_region = "ALL_REGIONS";
+    $('#region_selector button').click(function() {
+      $(this).addClass('active').siblings().removeClass('active');
+      selected_region = $(this).val();
+      setGameData(selected_patch, selected_region, selected_tier);
+    });
+
+    var selected_tier = "ALL_TIERS";
+    $('#tier_selector button').click(function() {
+      $(this).addClass('active').siblings().removeClass('active');
+      selected_tier = $(this).val();
+      setGameData(selected_patch, selected_region, selected_tier);
+    });
+
+    var selected_patch = "5.11";
+    $("[name='patch-switch']").bootstrapSwitch();
+    $("input[name='patch-switch']").on('switchChange.bootstrapSwitch', function(event, state) {
+      if(state) {
+        selected_patch = "5.11";
+      } else {
+        selected_patch = "5.14";
+      }
+      setGameData(selected_patch, selected_region, selected_tier);
+    });
+
+    function populateChampionDropdown() {
+      var champions = [];
+      for( i in champion_id_index) {
+        var entry = Object();
+        entry.champ_id = champion_id_index[i]
+        entry.champ_name = champion_index[ entry.champ_id ]["name"]
+        champions.push(entry);
+      }
+      champions = champions.sort(function(a,b) {
+        return b.champ_name.localeCompare(a.champ_name);
+      });
+
+      var select = document.getElementById("champ_selector");
+      for(var i in champions) {
+        var option = document.createElement('option');
+        option.text = champions[i].champ_name;
+        option.value = champions[i].champ_id;
+        select.add(option,0);
+      }
+    }
+
+
+    // load first set of data
+    setChampData(selected_patch, selected_region, selected_tier, selected_champion);
 
     </script>
 

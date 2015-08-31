@@ -74,7 +74,7 @@ for champ in champion_builds.keys():
 		reduction = grp.transform(builds)
 
 		# get top 100 builds
-		zipped = zip(list(reduction), build_games[champ][key])
+		zipped = zip(list(reduction), build_games[champ][key], builds)
 		sorted_zipped = sorted(zipped, key=lambda x: x[1], reverse=True)
 		top_builds = sorted_zipped[0:100]
 
@@ -82,6 +82,10 @@ for champ in champion_builds.keys():
 		for i in top_builds:
 			x = list(i[0])[0]
 			y = list(i[0])[1]
+			first = ALL_ITEMS[ i[2].index(4) ]
+			second = ALL_ITEMS[ i[2].index(3) ]
+			third = ALL_ITEMS[ i[2].index(2) ]
+			boots = ALL_ITEMS[ i[2].index(1) ]
 			builds_json.append( {
 				"champ":champ,
 				"patch":key[0],
@@ -89,7 +93,11 @@ for champ in champion_builds.keys():
 				"tier":key[2],
 				"x":x,
 				"y":y,
-				"games":i[1]
+				"games":i[1],
+				"first":first,
+				"second":second,
+				"third":third,
+				"boots":boots
 			} )
 		filename = "../data/by_champion/" + str(int(champ)) + "_" + key[0] + "_" + key[1] + "_" + key[2] + "_builds.json"
 		#print filename
@@ -114,5 +122,5 @@ for champ in champion_builds.keys():
 
 		items_json.append(entry)
 
-	with open("../data/champion_build_order_frequency.json", 'w') as f:
-		json.dump(items_json,f)
+		with open("../data/champion_builds/"+ champ + "_" + key[0] + "_" + key[1] + "_" + key[2] + ".json", 'w') as f:
+			json.dump(items_json,f)
