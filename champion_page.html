@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="Conor Dowling and Alex Brigham">
+
+    <title>AP Item Changes Visualization</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Switch -->
+    <line href="css/bootstrap-switch.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/assets/css/docs.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/highlight.css" rel="stylesheet">
+
+    <!-- Bootstrap Theme -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha256-sHwgyDk4CGNYom267UJX364ewnY4Bh55d53pxP5WDug= sha512-mkkeSf+MM3dyMWg3k9hcAttl7IVHe2BA1o/5xKLl4kBaP0bih7Mzz/DBy4y6cNZCHtE2tPgYBYH/KtEjOQYKxA==" crossorigin="anonymous">
+
+    <!-- Custom Styles -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/d3-tip.css" rel="stylesheet">
+
+
+  </head>
+
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">#lcsbigdata</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Overview</a></li>
+            <li><a href="champion_page.html">Champions</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Visualizing AP Item Changes</h1>
+        <p class="lead">We used dimensionality reduction to plot average champion builds in two dimensions.<br>The closer two champions are, the more similar their builds.</p>
+      </div>
+
+      <div class="row">
+
+        <div class="left-div">
+          <div id="region_selector" class="btn-group-vertical" role="group" aria-label="regions">
+            <button type="button" class="btn btn-default active" value="ALL_REGIONS">All</button>
+            <button type="button" class="btn btn-default" value="BR">BR</button>
+            <button type="button" class="btn btn-default" value="EUNE">EUNE</button>
+            <button type="button" class="btn btn-default" value="EUW">EUW</button>
+            <button type="button" class="btn btn-default" value="KR">KR</button>
+            <button type="button" class="btn btn-default" value="LAN">LAN</button>
+            <button type="button" class="btn btn-default" value="LAS">LAS</button>
+            <button type="button" class="btn btn-default" value="NA">NA</button>
+            <button type="button" class="btn btn-default" value="OCE">OCE</button>
+            <button type="button" class="btn btn-default" value="RU">RU</button>
+            <button type="button" class="btn btn-default" value="TR">TR</button>
+          </div>
+        </div>
+
+        <div class="center-div">
+        
+          <div class="graph-div">
+            <d3ScatterPlot></d3ScatterPlot>
+          </div>
+
+          <div id="tier_selector" class="btn-group" role="group" aria-label="tiers">
+            <button type="button" class="btn btn-default" value="BRONZE">Bronze</button>
+            <button type="button" class="btn btn-default" value="SILVER">Silver</button>
+            <button type="button" class="btn btn-default" value="GOLD">Gold</button>
+            <button type="button" class="btn btn-default" value="PLATINUM">Platinum</button>
+            <button type="button" class="btn btn-default" value="DIAMOND">Diamond+</button>
+            <button type="button" class="btn btn-default active" value="ALL_TIERS">All</button>
+          </div>
+
+          <div>
+          <input type="checkbox" name="patch-switch" checked data-on-text="5.11" data-off-text="5.14" >
+          </div>
+
+        </div>
+
+        <div class="right-div col-md-3">
+          <select class="form-control" id="champ_selector">
+      
+          </select>
+          <div class="delta-container" id="delta-table">
+            
+          </div>
+
+        </div>
+
+      </div>
+    </div><!-- /.container -->
+
+    
+
+    <h1>Build Order Statistics</h1>
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Boots</h3>
+      </div>
+      <div class="panel-body">
+      Panel Content
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">First Item</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Second Item</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Third Item</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
+    </div>
+
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- Load JQuery from site -->
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script> 
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Begin D3 Javascript -->
+    <script src="js/d3-tip.js"></script>
+    <script src="js/d3_scatterplot.js"></script>
+    <script>
+      // Loading static datasets
+      $.getJSON("data/item_index.json", function(json) {
+        item_index = json.data;
+      });
+      $.getJSON("data/champion_index.json", function(json) {
+        champion_index = json.data;
+        //Create list of champion IDs
+        champion_id_index = [];
+        for (var key in champion_index) {
+            if (key === 'length' || !champion_index.hasOwnProperty(key)) continue;
+            champion_id_index.push(key);
+            //console.log("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"]);
+            // And fetch all the images for the champions
+            var box_size = "25";
+            var x = "0"
+            var y = "0"
+            var imgURL = "http://ddragon.leagueoflegends.com/cdn/5.16.1/img/champion/" + champion_index[key]["image"]["full"] + "";
+
+            svg.append("pattern")
+                .attr("id", key)
+                .attr("patternUnits", "objectBoundingBox") //userSpaceOnUse or objectBoundingBox or maybe viewBox
+                .attr("x",x)
+                .attr("y",y)
+                .attr("width", box_size)
+                .attr("height", box_size)
+                //.attr("fill", "blue")
+                //.style("background-image", "url(" + imgURL + ")" )
+                //.style("background-size", "cover")
+                //.attr("viewBox", "0 0 60 55")
+                
+                .append("image")
+                .attr("xlink:href", imgURL)
+                .attr("x", x)
+                .attr("y", y)
+                .attr("preserveAspectRatio", "none")
+                .attr("width", box_size)
+                .attr("height", box_size) // */
+                ;
+        }
+        populateChampionDropdown();
+      });
+
+      $.getJSON("data/region_index.json", function(json) {
+        region_index = json.data;
+      });
+
+    </script>
+
+    <script type="text/javascript">
+      
+
+
+      champion_build_frequency = [];
+      function loadBuildStatistics(path, region, tier, champ) {
+        var file = "data/champion_builds/" + champ.toString() + "_" + patch + "_" + region + "_" + tier +  ".json";
+        loadDataFromFile(
+        file,
+        function(json){
+            champion_build_frequency = json;
+          }
+        );
+      }
+      loadBuildStatistics("5.11", "ALL_REGIONS", "ALL_TIERS", 1);
+
+      function updateBuildStats(stats) {
+        return;
+
+      }
+
+    </script>
+
+    <script>
+    var selected_champion = 1;
+    var selected_region = "ALL_REGIONS";
+    $('#region_selector button').click(function() {
+      $(this).addClass('active').siblings().removeClass('active');
+      selected_region = $(this).val();
+      setGameData(selected_patch, selected_region, selected_tier);
+    });
+
+    var selected_tier = "ALL_TIERS";
+    $('#tier_selector button').click(function() {
+      $(this).addClass('active').siblings().removeClass('active');
+      selected_tier = $(this).val();
+      setGameData(selected_patch, selected_region, selected_tier);
+    });
+
+    var selected_patch = "5.11";
+    $("[name='patch-switch']").bootstrapSwitch();
+    $("input[name='patch-switch']").on('switchChange.bootstrapSwitch', function(event, state) {
+      if(state) {
+        selected_patch = "5.11";
+      } else {
+        selected_patch = "5.14";
+      }
+      setGameData(selected_patch, selected_region, selected_tier);
+    });
+
+    function populateChampionDropdown() {
+      var champions = [];
+      for( i in champion_id_index) {
+        var entry = Object();
+        entry.champ_id = champion_id_index[i]
+        entry.champ_name = champion_index[ entry.champ_id ]["name"]
+        champions.push(entry);
+      }
+      champions = champions.sort(function(a,b) {
+        return b.champ_name.localeCompare(a.champ_name);
+      });
+
+      var select = document.getElementById("champ_selector");
+      for(var i in champions) {
+        var option = document.createElement('option');
+        option.text = champions[i].champ_name;
+        option.value = champions[i].champ_id;
+        select.add(option,0);
+      }
+    }
+
+
+    // load first set of data
+    setChampData(selected_patch, selected_region, selected_tier, selected_champion);
+
+    </script>
+
+  </body>

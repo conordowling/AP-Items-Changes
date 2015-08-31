@@ -1,0 +1,24 @@
+<html>
+<div id="chartContainer">
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.1.6.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script> 
+  <script type="text/javascript">
+
+    $.getJSON("data/by_patch_region/grp_5.11_BR.json", function(json) {
+      data = json;
+      var svg = dimple.newSvg("#chartContainer", 590, 400);
+      console.log(data);
+      //data = dimple.filterData(data, "Owner", ["Aperture", "Black Mesa"])
+      var myChart = new dimple.chart(svg, data);
+      myChart.setBounds(60, 30, 505, 305);
+      var x = myChart.addCategoryAxis("x", "champion");
+      //x.addOrderRule("Champion");
+      myChart.addMeasureAxis("y", "games");
+      myChart.addSeries("region", dimple.plot.line);
+      myChart.addLegend(60, 10, 500, 20, "right");
+      myChart.draw();
+    });
+  </script>
+</div>
+</html>

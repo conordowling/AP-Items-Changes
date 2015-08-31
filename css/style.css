@@ -1,0 +1,82 @@
+/* Format X and Y Axis */
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.center-div {
+  display: inline-block;
+  float: center;
+  width: 800px;
+  text-align:center;
+}
+
+.left-div {
+  display: inline-block;
+  float:left;
+  text-align:right;
+}
+
+.right-div {
+  display: inline-block;
+  float: right;
+  text-align:left;
+}
+
+/* Graph Style */
+.graph-div {
+	padding:10px;
+  width:100%;
+	text-align:center;
+}
+
+.delta-container {
+  display: inline-block;
+
+  padding:0px;
+  overflow:auto;
+  height:500px;
+  width:250px;
+}
+
+.delta-panel {
+  padding:5px;
+  margin:0px;
+  height:50px;
+  border-radius:0px;
+}
+
+.alignleft {
+  float: left;
+  text-align:left;
+  margin-top:-10px;
+}
+.aligncenter {
+  float: left;
+  width:50%;
+  text-align:left;
+  margin-top:-5px;
+  padding-left:10px;
+}
+.alignright {
+ float: left;
+ width:33.33333%;
+ text-align:right;
+ margin-top:-5px;
+
+}​
