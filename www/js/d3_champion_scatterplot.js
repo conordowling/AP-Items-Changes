@@ -36,7 +36,7 @@ var tip = d3.tip()
   .offset([-10, 0])
   .html(function(d) {
     console.log(d);
-    return "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["boots"]]['image']['full'] + ">" + 
+    return "Games: " + d["games"] + "<br><img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["boots"]]['image']['full'] + ">" + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["first"]]['image']['full'] + ">" + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["second"]]['image']['full'] + ">" + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["third"]]['image']['full'] + ">";
@@ -199,7 +199,7 @@ function updateDataset(newDataset){
     // Store the old dataset to do comparisons to the new one
     this.oldDataSet = dataset;
 
-    dataset = [];
+    this.dataset = [];
 
     // Calculate the distance between the old points and the new ones
     for (var i = 0 ; i < ( newDataset.length > this.dataset.length ? newDataset.length : this.dataset.length ) ; i++ ){
@@ -268,6 +268,8 @@ function updateCircles() {
         return Math.sqrt(elem["games"]) * 7;
     }
 
+    this.svg.selectAll("circle").data(dataset).exit().remove();
+
     // Generate new circles if any are missing
     this.svg.selectAll("circle")
         .data(dataset)
@@ -284,6 +286,7 @@ function updateCircles() {
     // Set visibility on circles
     this.svg.selectAll("circle")
         .style("visibility", function(d) {
+            console.log(d);
             return d == undefined ? "hidden" : "visible";
         });
 
@@ -437,15 +440,26 @@ function getRandomPoints(volume, maxValue){
 //  Nothing
 function loadDataFromFile(filename, cb){
     //TODO: Add some safety
-    $.getJSON(filename, 
-        function(json){
-            var data = [];
-            for (var i in json){
-                data[i] = json[i];
-            }
-            cb(data);
+    $.ajax({
+        url:filename,
+        type:'HEAD',
+        error: function()
+        {
+            $('#errorModal').focus();
+        },
+        success: function()
+        {
+           $.getJSON(filename, 
+            function(json){
+                var data = [];
+                for (var i in json){
+                    data[i] = json[i];
+                }
+                cb(data);
+            });
         }
-        );
+    });
+    
 }
 
 // Get the X-coordinate from the given data point

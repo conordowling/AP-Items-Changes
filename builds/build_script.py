@@ -50,9 +50,15 @@ for patch in ["5.11", "5.14"]:
 
 					build_objects[key['champ']] [(key['patch'], region, tier)].append(key)
 
-					champion_builds[key['champ']] [(key['patch'], region, tier)].append(build_array)
-					build_games[key['champ']] [(key['patch'], region, tier)].append(build['value'])
+					try:
+						index = champion_builds[key['champ']] [(key['patch'], region, tier)].index(build_array)
+
+						build_games[key['champ']] [(key['patch'], region, tier)] [index] += (build['value'])
 					
+					except ValueError:
+						champion_builds[key['champ']] [(key['patch'], region, tier)].append(build_array)
+						build_games[key['champ']] [(key['patch'], region, tier)].append(build['value'])
+
 					#update champion item statistics
 					champion_items[key['champ']] [(key["patch"], region, tier)] ["boots"] [key['boots']] += build['value']
 					champion_items[key['champ']] [(key["patch"], region, tier)] ["first"] [key['first']] += build['value']

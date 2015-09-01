@@ -26,20 +26,26 @@ The first step in the data pipeline is collecting the match data for the matches
 We chose to store this match data in a MongoDB database, creating a table for each set of matches provided. MongoDB seemed like an obvious choice because it was easy to setup and could store the match data in raw JSON format with no editing required.
 
 \subsection{MapReduce}
-Once we had gathered all of the data, we used MongoDB's built-in map-reduce functionality to extract the data that we wanted from each game and aggregate that data within regions and patches.
+Once we had gathered all of the data, we used MongoDB's built-in map-reduce functionality to extract the data that we wanted from each game and aggregate that data within regions and patches. We performed three separate map-reduce operations to obtains statistics on how many times champions were played, which items they built, and which builds were most popular.
 
 \subsection{Sci-Kit Learn}
 
+
+
 \section{Visualization}
 \subsection{Javascript}
+
+
+
 \subsection{D3}
-\subsection{CSS}
+
 
 \section{Data Sets}
 \subsection{Build Diversity Across Champions}
+
 \subsection{Build Diversity Within Champions}
 \subsection{Champion Build Order Statistics}
-\subsection{Item Purchase Frequency By Minute}
+
 
 
 \section{Results}
@@ -47,7 +53,7 @@ Once we had gathered all of the data, we used MongoDB's built-in map-reduce func
 \section{Item Diversity and Build Order Diversity Within Champions}
 \section{Notable Trends}
 
-\section{Conclusions}
+\section{Conclusion}
 
 
 \section{Future Work}
