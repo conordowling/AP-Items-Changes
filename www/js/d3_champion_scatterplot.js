@@ -35,7 +35,7 @@ var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
-    return "Games: " + d["games"] + "<br><img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["boots"]]['image']['full'] + ">" + 
+    return "Games: " + d["games"] + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["boots"]]['image']['full'] + ">" + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["first"]]['image']['full'] + ">" + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["second"]]['image']['full'] + ">" + 
@@ -75,7 +75,16 @@ function initializeDataPointsFromDataset() {
         .attr("cy", function(d) {
             return yScale(getY(d));
         })
-        .attr("r", 2);
+        .attr("r", 2)
+        .attr("fill", function() {
+            var r = Math.floor(Math.random() * 6);
+            var colors = ["red", "blue", "green", "orange", "purple", "yellow"];
+            return colors[r];
+        })
+        .attr("stroke", function() {
+            return "black";
+        });
+
 }
 
 // Function to initialize D3 visualization. It uses the d3ScatterPlot element found in the HTML page to host the visualization.
@@ -234,8 +243,8 @@ function updateScaleAndAxisWithValues(domain, range) {
 // Returns:
 //  Nothing
 function updateScaleAndAxis() {
-
-    updateScaleAndAxisWithValues(
+    var bounds = bounds_index[selected_champion];
+    /*updateScaleAndAxisWithValues(
     [
         d3.min(dataset, getY),
         d3.max(dataset, getY)
@@ -243,6 +252,18 @@ function updateScaleAndAxis() {
     [
         d3.min(dataset, getX),
         d3.max(dataset, getX)
+    ]
+
+    )*/
+
+    updateScaleAndAxisWithValues(
+    [
+        bounds.minY,
+        bounds.maxY
+    ],
+    [
+        bounds.minX,
+        bounds.maxX
     ]
 
     )
@@ -264,7 +285,7 @@ function updateCircles() {
     }
     // The radius of the circles while being hovered over
     var mouseOverRadius = function(elem){
-        return Math.sqrt(elem["games"]) * 7;
+        return 10;
     }
 
     this.svg.selectAll("circle").data(dataset).exit().remove();
@@ -280,7 +301,15 @@ function updateCircles() {
         .attr("cy", function(d) {
             return yScale(getY(d));
         })
-        .attr("r", transformingRadius);
+        .attr("r", transformingRadius)
+        .attr("fill", function() {
+            var r = Math.floor(Math.random() * 6);
+            var colors = ["red", "blue", "green", "orange", "purple", "yellow"];
+            return colors[r];
+        })
+        .attr("stroke", function() {
+            return "black";
+        });
 
     // Set visibility on circles
     this.svg.selectAll("circle")
@@ -443,7 +472,7 @@ function loadDataFromFile(filename, cb){
         type:'HEAD',
         error: function()
         {
-            $('#errorModal').focus();
+            $('#errorModal').modal();
         },
         success: function()
         {
