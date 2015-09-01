@@ -52,6 +52,10 @@ body {
   overflow:auto;
   height:500px;
   width:250px;
+  border-width:1px;
+  border-radius:3px;
+  border-color: gray;
+  border-style: solid;
 }
 
 .delta-panel {
@@ -80,3 +84,21 @@ body {
  margin-top:-5px;
 
 }​
+
+.buttons {
+  display: inline-block;
+}
+
+.item-block {
+    display: inline-block;
+    width:20%;
+    height:90%;
+    font-size:12px;
+}
+
+.champ-dropdown {
+  width:200px;
+  float: center;
+  margin:auto;
+}
+

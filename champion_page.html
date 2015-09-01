@@ -32,6 +32,23 @@
 
   <body>
 
+    <div class="modal fade" id='errorModal'>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Error</h4>
+          </div>
+          <div class="modal-body">
+            <p>There are no recorded builds with these settings.&hellip;</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -41,12 +58,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">#lcsbigdata</a>
+          <a class="navbar-brand" href="index.html">#lcsbigdata</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Overview</a></li>
-            <li><a href="champion_page.html">Champions</a></li>
+            <li><a href="index.html">Overview</a></li>
+            <li class="active"><a href="champion_page.html">Champions</a></li>
             <li><a href="about.html">About</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -56,8 +73,11 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1>Visualizing AP Item Changes</h1>
-        <p class="lead">We used dimensionality reduction to plot average champion builds in two dimensions.<br>The closer two champions are, the more similar their builds.</p>
+        <h1>Champion Build Diversity</h1>
+        <p class="lead">Below</p>
+        <select class="form-control champ-dropdown" id="champ_selector">
+      
+        </select>
       </div>
 
       <div class="row">
@@ -83,28 +103,60 @@
           <div class="graph-div">
             <d3ScatterPlot></d3ScatterPlot>
           </div>
+          <div class ='row'>
+            <div id="tier_selector" class="btn-group buttons" role="group" aria-label="tiers">
+              <button type="button" class="btn btn-default active" value="ALL_TIERS">All</button>
+              <button type="button" class="btn btn-default" value="BRONZE">Bronze</button>
+              <button type="button" class="btn btn-default" value="SILVER">Silver</button>
+              <button type="button" class="btn btn-default" value="GOLD">Gold</button>
+              <button type="button" class="btn btn-default" value="PLATINUM">Platinum</button>
+              <button type="button" class="btn btn-default" value="DIAMOND">Diamond+</button>
+              
+            </div>
 
-          <div id="tier_selector" class="btn-group" role="group" aria-label="tiers">
-            <button type="button" class="btn btn-default" value="BRONZE">Bronze</button>
-            <button type="button" class="btn btn-default" value="SILVER">Silver</button>
-            <button type="button" class="btn btn-default" value="GOLD">Gold</button>
-            <button type="button" class="btn btn-default" value="PLATINUM">Platinum</button>
-            <button type="button" class="btn btn-default" value="DIAMOND">Diamond+</button>
-            <button type="button" class="btn btn-default active" value="ALL_TIERS">All</button>
+            <div id="patch_selector" class="btn-group buttons" role="group" aria-label="patches">
+              <button type="button" class="btn btn-default active" value="5.11">5.11</button>
+              <button type="button" class="btn btn-default" value="5.14">5.14</button>
+            </div>
           </div>
 
-          <div>
-          <input type="checkbox" name="patch-switch" checked data-on-text="5.11" data-off-text="5.14" >
+          <h1>Build Order Statistics</h1>
+
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Boots</h3>
+            </div>
+            <div class="panel-body" id='boots_panel'>
+            Panel Content
+            </div>
           </div>
 
-        </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">First Item</h3>
+            </div>
+            <div class="panel-body" id='first_panel'>
+              Panel content
+            </div>
+          </div>
 
-        <div class="right-div col-md-3">
-          <select class="form-control" id="champ_selector">
-      
-          </select>
-          <div class="delta-container" id="delta-table">
-            
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Second Item</h3>
+            </div>
+            <div class="panel-body" id='second_panel'>
+              Panel content
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Third Item</h3>
+            </div>
+            <div class="panel-body" id='third_panel'>
+              Panel content
+            </div>
           </div>
 
         </div>
@@ -112,46 +164,6 @@
       </div>
     </div><!-- /.container -->
 
-    
-
-    <h1>Build Order Statistics</h1>
-
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Boots</h3>
-      </div>
-      <div class="panel-body">
-      Panel Content
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">First Item</h3>
-      </div>
-      <div class="panel-body">
-        Panel content
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Second Item</h3>
-      </div>
-      <div class="panel-body">
-        Panel content
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Third Item</h3>
-      </div>
-      <div class="panel-body">
-        Panel content
-      </div>
-    </div>
 
 
 
@@ -168,7 +180,7 @@
 
     <!-- Begin D3 Javascript -->
     <script src="js/d3-tip.js"></script>
-    <script src="js/d3_scatterplot.js"></script>
+    <script src="js/d3_champion_scatterplot.js"></script>
     <script>
       // Loading static datasets
       $.getJSON("data/item_index.json", function(json) {
@@ -181,7 +193,6 @@
         for (var key in champion_index) {
             if (key === 'length' || !champion_index.hasOwnProperty(key)) continue;
             champion_id_index.push(key);
-            //console.log("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"]);
             // And fetch all the images for the champions
             var box_size = "25";
             var x = "0"
@@ -224,7 +235,7 @@
 
       champion_build_frequency = [];
       function loadBuildStatistics(path, region, tier, champ) {
-        var file = "data/champion_builds/" + champ.toString() + "_" + patch + "_" + region + "_" + tier +  ".json";
+        var file = "data/champion_builds/" + champ.toString() + "_" + selected_patch + "_" + selected_region + "_" + selected_tier +  ".json";
         loadDataFromFile(
         file,
         function(json){
@@ -232,7 +243,7 @@
           }
         );
       }
-      loadBuildStatistics("5.11", "ALL_REGIONS", "ALL_TIERS", 1);
+      //loadBuildStatistics("5.11", "ALL_REGIONS", "ALL_TIERS", 1);
 
       function updateBuildStats(stats) {
         return;
@@ -247,26 +258,36 @@
     $('#region_selector button').click(function() {
       $(this).addClass('active').siblings().removeClass('active');
       selected_region = $(this).val();
-      setGameData(selected_patch, selected_region, selected_tier);
+      populateChampionBuilds();
+      setChampData(selected_champion, selected_patch, selected_region, selected_tier);
     });
 
     var selected_tier = "ALL_TIERS";
     $('#tier_selector button').click(function() {
       $(this).addClass('active').siblings().removeClass('active');
       selected_tier = $(this).val();
-      setGameData(selected_patch, selected_region, selected_tier);
+      populateChampionBuilds();
+      setChampData(selected_champion, selected_patch, selected_region, selected_tier);
     });
 
     var selected_patch = "5.11";
-    $("[name='patch-switch']").bootstrapSwitch();
-    $("input[name='patch-switch']").on('switchChange.bootstrapSwitch', function(event, state) {
-      if(state) {
-        selected_patch = "5.11";
-      } else {
-        selected_patch = "5.14";
-      }
-      setGameData(selected_patch, selected_region, selected_tier);
+    $('#patch_selector button').click(function() {
+        $(this).addClass('active').siblings().removeClass('active');
+        selected_patch = $(this).val();
+      populateChampionBuilds();
+      setChampData(selected_champion, selected_patch, selected_region, selected_tier);
     });
+
+    var selected_champion = "1";
+    $('#champ_selector').change(function() {
+      selected_champion = $(this).val();
+      populateChampionBuilds();
+      setChampData(selected_champion, selected_patch, selected_region, selected_tier);
+    });
+
+    // Now that the variables are initialized, create the real visualization
+    populateChampionBuilds();
+    setChampData(selected_champion, selected_patch, selected_region, selected_tier);
 
     function populateChampionDropdown() {
       var champions = [];
@@ -287,11 +308,45 @@
         option.value = champions[i].champ_id;
         select.add(option,0);
       }
+
+      var textToFind = 'Annie';
+
+      var dd = document.getElementById('champ_selector');
+      for (var i = 0; i < dd.options.length; i++) {
+          if (dd.options[i].text === textToFind) {
+              dd.selectedIndex = i;
+              break;
+          }
+      }
     }
 
+    function populateChampionBuilds() {
+      $.getJSON("data/champion_builds/" + selected_champion + "_" + selected_patch + "_" + selected_region + "_" + selected_tier + ".json", function(json) {
+        champion_builds = json;
 
-    // load first set of data
-    setChampData(selected_patch, selected_region, selected_tier, selected_champion);
+        var build_items = ["boots", "first", "second", "third"];
+        for( j in build_items) {
+          var num = build_items[j];
+          var panel = document.getElementById(num + "_panel");
+
+          var panel_html = "";
+          for(i=0; i< Math.min(5,champion_builds[num].length); ++i) {
+            var item = champion_builds[num][i]["item"];
+            var value = Math.round( champion_builds[num][i]['value'] * 10000) /100;
+            var name = item_index[item]['name'];
+            var image = "http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[item]['image']['full'];
+
+            var html = "<div class='item-block'><div><img src=" + image + "></div><div style='padding:5px;'><p>" + name + "</p><p style='font-size:20px;'>" + value + "%</p></div></div>";
+            panel_html += html;
+          }
+          panel.innerHTML = panel_html;
+        }
+
+
+
+      });
+      
+    }
 
     </script>
 

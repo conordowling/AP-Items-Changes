@@ -83,17 +83,20 @@
             <d3ScatterPlot></d3ScatterPlot>
           </div>
 
-          <div id="tier_selector" class="btn-group" role="group" aria-label="tiers">
-            <button type="button" class="btn btn-default" value="BRONZE">Bronze</button>
-  		      <button type="button" class="btn btn-default" value="SILVER">Silver</button>
-       			<button type="button" class="btn btn-default" value="GOLD">Gold</button>
-       			<button type="button" class="btn btn-default" value="PLATINUM">Platinum</button>
-       			<button type="button" class="btn btn-default" value="DIAMOND">Diamond+</button>
-       			<button type="button" class="btn btn-default active" value="ALL_TIERS">All</button>
-          </div>
+          <div class ='row'>
+            <div id="tier_selector" class="btn-group buttons" role="group" aria-label="tiers">
+              <button type="button" class="btn btn-default active" value="ALL_TIERS">All</button>
+              <button type="button" class="btn btn-default" value="BRONZE">Bronze</button>
+              <button type="button" class="btn btn-default" value="SILVER">Silver</button>
+              <button type="button" class="btn btn-default" value="GOLD">Gold</button>
+              <button type="button" class="btn btn-default" value="PLATINUM">Platinum</button>
+              <button type="button" class="btn btn-default" value="DIAMOND">Diamond+</button>
+            </div>
 
-          <div>
-          <input type="checkbox" name="patch-switch" checked data-on-text="5.11" data-off-text="5.14" >
+            <div id="patch_selector" class="btn-group buttons" role="group" aria-label="patches">
+              <button type="button" class="btn btn-default active" value="5.11">5.11</button>
+              <button type="button" class="btn btn-default" value="5.14">5.14</button>
+            </div>
           </div>
 
         </div>
@@ -142,7 +145,6 @@
       for (var key in champion_index) {
           if (key === 'length' || !champion_index.hasOwnProperty(key)) continue;
           champion_id_index.push(key);
-          //console.log("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion_index[key]["image"]["full"]);
           // And fetch all the images for the champions
           var box_size = "35";
           var x = "0"
@@ -189,14 +191,10 @@
     });
 
     var selected_patch = "5.11";
-    $("[name='patch-switch']").bootstrapSwitch();
-    $("input[name='patch-switch']").on('switchChange.bootstrapSwitch', function(event, state) {
-      if(state) {
-        selected_patch = "5.11";
-      } else {
-        selected_patch = "5.14";
-      }
-      setGameData(selected_patch, selected_region, selected_tier);
+    $('#patch_selector button').click(function() {
+      $(this).addClass('active').siblings().removeClass('active');
+      selected_patch = $(this).val();
+      setGameData(selected_patch, selected_region, selected_tier);      
     });
     
 
