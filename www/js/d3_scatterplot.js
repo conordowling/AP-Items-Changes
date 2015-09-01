@@ -149,12 +149,14 @@ function initializeScatterPlot(data) {
     // Next step
     initializeScale(
         [
-            d3.min(dataset, getX),
-            d3.max(dataset, getX)
-        ], [d3.min(dataset, getY),
-            d3.max(dataset, getY)
+            Math.min(d3.min(dataset, getX),-1.5),
+            Math.max(d3.max(dataset, getX),5)
+        ], [
+            Math.min(d3.min(dataset, getY),-4),
+            Math.max(d3.max(dataset, getY),1)
         ]
     );
+
 };
 
 // Function to build the scatterplot based on randomly generated data
@@ -231,14 +233,14 @@ function updateScaleAndAxisWithValues(domain, range) {
 function updateScaleAndAxis() {
 
     updateScaleAndAxisWithValues(
-    [
-        d3.min(dataset, getY),
-        d3.max(dataset, getY)
-    ],
-    [
-        d3.min(dataset, getX),
-        d3.max(dataset, getX)
-    ]
+        [
+
+            Math.min(d3.min(dataset, getY),-4),
+            Math.max(d3.max(dataset, getY),1)
+        ], [
+            Math.min(d3.min(dataset, getX),-1.5),
+            Math.max(d3.max(dataset, getX),5)
+        ]
 
     )
 }

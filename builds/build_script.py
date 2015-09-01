@@ -21,6 +21,7 @@ ALL_ITEMS = [3089,3087,3085,3083,3285,3290,3092,3472,3748,3110,3102,3100,3800,35
 
 
 champion_builds = defaultdict(lambda: defaultdict(lambda: []))
+build_objects = defaultdict(lambda: defaultdict(lambda: []))
 build_games = defaultdict(lambda: defaultdict(lambda: []))
 champion_items = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0))))
 champion_games = defaultdict(lambda: defaultdict(lambda: 0) )
@@ -41,10 +42,13 @@ for patch in ["5.11", "5.14"]:
 						tier = "BRONZE"
 					#update champion builds data
 					build_array = [0]*len(ALL_ITEMS)
-					build_array[ ALL_ITEMS.index(int(key["first"])) ] = 4
-					build_array[ ALL_ITEMS.index(int(key["second"])) ] = 3
-					build_array[ ALL_ITEMS.index(int(key["third"])) ] = 2
+					
 					build_array[ ALL_ITEMS.index(int(key["boots"])) ] = 1
+					build_array[ ALL_ITEMS.index(int(key["third"])) ] = 2
+					build_array[ ALL_ITEMS.index(int(key["second"])) ] = 3
+					build_array[ ALL_ITEMS.index(int(key["first"])) ] = 4
+
+					build_objects[key['champ']] [(key['patch'], region, tier)].append(key)
 
 					champion_builds[key['champ']] [(key['patch'], region, tier)].append(build_array)
 					build_games[key['champ']] [(key['patch'], region, tier)].append(build['value'])
@@ -74,7 +78,7 @@ for champ in champion_builds.keys():
 		reduction = grp.transform(builds)
 
 		# get top 100 builds
-		zipped = zip(list(reduction), build_games[champ][key], builds)
+		zipped = zip(list(reduction), build_games[champ][key], build_objects[champ][key])
 		sorted_zipped = sorted(zipped, key=lambda x: x[1], reverse=True)
 		top_builds = sorted_zipped[0:100]
 
@@ -82,10 +86,6 @@ for champ in champion_builds.keys():
 		for i in top_builds:
 			x = list(i[0])[0]
 			y = list(i[0])[1]
-			first = ALL_ITEMS[ i[2].index(4) ]
-			second = ALL_ITEMS[ i[2].index(3) ]
-			third = ALL_ITEMS[ i[2].index(2) ]
-			boots = ALL_ITEMS[ i[2].index(1) ]
 			builds_json.append( {
 				"champ":champ,
 				"patch":key[0],
@@ -94,10 +94,10 @@ for champ in champion_builds.keys():
 				"x":x,
 				"y":y,
 				"games":i[1],
-				"first":first,
-				"second":second,
-				"third":third,
-				"boots":boots
+				"boots":i[2]["boots"],
+				"first":i[2]["first"],
+				"second":i[2]["second"],
+				"third":i[2]["third"]
 			} )
 		filename = "../data/by_champion/" + str(int(champ)) + "_" + key[0] + "_" + key[1] + "_" + key[2] + "_builds.json"
 		#print filename
@@ -122,5 +122,5 @@ for champ in champion_builds.keys():
 
 		items_json.append(entry)
 
-		with open("../data/champion_builds/"+ champ + "_" + key[0] + "_" + key[1] + "_" + key[2] + ".json", 'w') as f:
-			json.dump(items_json,f)
+		with open("../data/champion_builds/"+ str(champ) + "_" + key[0] + "_" + key[1] + "_" + key[2] + ".json", 'w') as f:
+			json.dump(entry,f)
