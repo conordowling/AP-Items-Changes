@@ -233,6 +233,12 @@ function updateScaleAndAxisWithValues(domain, range) {
         .duration(1000)
         .call(xAxis);
 
+    this.svg.select(".x2.axis")
+        .transition()
+        .duration(1000)
+        .call(x2Axis)
+        .orient("top")
+
     this.svg.select(".y.axis")
         .transition()
         .duration(100)
