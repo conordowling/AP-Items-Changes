@@ -35,7 +35,6 @@ var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
-    console.log(d);
     return "Games: " + d["games"] + "<br><img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["boots"]]['image']['full'] + ">" + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["first"]]['image']['full'] + ">" + 
         "<img src=http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/" + item_index[d["second"]]['image']['full'] + ">" + 
@@ -286,7 +285,6 @@ function updateCircles() {
     // Set visibility on circles
     this.svg.selectAll("circle")
         .style("visibility", function(d) {
-            console.log(d);
             return d == undefined ? "hidden" : "visible";
         });
 

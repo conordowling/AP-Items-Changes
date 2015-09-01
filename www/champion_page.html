@@ -73,8 +73,8 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1>Visualizing AP Item Changes</h1>
-        <p class="lead">We used dimensionality reduction to plot average champion builds in two dimensions.<br>The closer two champions are, the more similar their builds.</p>
+        <h1>Champion Build Diversity</h1>
+        <p class="lead">Below</p>
         <select class="form-control champ-dropdown" id="champ_selector">
       
         </select>
@@ -330,7 +330,7 @@
           var panel = document.getElementById(num + "_panel");
 
           var panel_html = "";
-          for(i=0; i<5; ++i) {
+          for(i=0; i< Math.min(5,champion_builds[num].length); ++i) {
             var item = champion_builds[num][i]["item"];
             var value = Math.round( champion_builds[num][i]['value'] * 10000) /100;
             var name = item_index[item]['name'];
