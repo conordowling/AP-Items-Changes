@@ -61,7 +61,6 @@ initializeRandomScatterPlot(10, 100);
 //  Nothing
 function initializeDataPointsFromDataset() {
     // Create Circles
-    //console.log(this.dataset);
     this.svg.selectAll("circle")
         .data(dataset)
         .enter()
