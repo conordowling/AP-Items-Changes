@@ -74,7 +74,7 @@
 
       <div class="starter-template">
         <h1>Champion Build Diversity</h1>
-        <p class="lead">Below</p>
+        <p class="lead">Choose a champion to view popular builds<br>Hover over a point to see a specific build</p>
         <select class="form-control champ-dropdown" id="champ_selector">
       
         </select>
@@ -227,6 +227,10 @@
         region_index = json.data;
       });
 
+      $.getJSON("data/champion_bounds.json", function(json) {
+        bounds_index = json;
+      });
+
     </script>
 
     <script type="text/javascript">
@@ -253,7 +257,7 @@
     </script>
 
     <script>
-    var selected_champion = 1;
+    selected_champion = 1;
     var selected_region = "ALL_REGIONS";
     $('#region_selector button').click(function() {
       $(this).addClass('active').siblings().removeClass('active');
@@ -321,7 +325,7 @@
     }
 
     function populateChampionBuilds() {
-      $.getJSON("data/champion_builds/" + selected_champion + "_" + selected_patch + "_" + selected_region + "_" + selected_tier + ".json", function(json) {
+      loadDataFromFile("data/champion_builds/" + selected_champion + "_" + selected_patch + "_" + selected_region + "_" + selected_tier + ".json", function(json) {
         champion_builds = json;
 
         var build_items = ["boots", "first", "second", "third"];
